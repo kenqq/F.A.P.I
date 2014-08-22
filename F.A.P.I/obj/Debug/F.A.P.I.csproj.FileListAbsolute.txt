@@ -1,0 +1,18 @@
+C:\Users\John\Documents\Visual Studio 2008\Projects\F.A.P.I\F.A.P.I\bin\Debug\F.A.P.I.exe
+C:\Users\John\Documents\Visual Studio 2008\Projects\F.A.P.I\F.A.P.I\bin\Debug\F.A.P.I.pdb
+C:\Users\John\Documents\Visual Studio 2008\Projects\F.A.P.I\F.A.P.I\bin\Debug\NSoup.dll
+C:\Users\John\Documents\Visual Studio 2008\Projects\F.A.P.I\F.A.P.I\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\John\Documents\Visual Studio 2008\Projects\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.Form1.resources
+C:\Users\John\Documents\Visual Studio 2008\Projects\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.Properties.Resources.resources
+C:\Users\John\Documents\Visual Studio 2008\Projects\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.csproj.GenerateResource.Cache
+C:\Users\John\Documents\Visual Studio 2008\Projects\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.exe
+C:\Users\John\Documents\Visual Studio 2008\Projects\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.pdb
+C:\Users\John\Documents\Visual Studio 2008\Projects\F.A.P.I\F.A.P.I\bin\Debug\Newtonsoft.Json.dll
+E:\ljx\MyProject\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.exe
+E:\ljx\MyProject\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.pdb
+E:\ljx\MyProject\F.A.P.I\F.A.P.I\bin\Debug\F.A.P.I.exe
+E:\ljx\MyProject\F.A.P.I\F.A.P.I\bin\Debug\F.A.P.I.pdb
+E:\ljx\MyProject\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.csprojResolveAssemblyReference.cache
+E:\ljx\MyProject\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.Form1.resources
+E:\ljx\MyProject\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.Properties.Resources.resources
+E:\ljx\MyProject\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.csproj.GenerateResource.Cache
