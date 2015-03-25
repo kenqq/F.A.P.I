@@ -12,7 +12,9 @@ E:\ljx\MyProject\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.exe
 E:\ljx\MyProject\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.pdb
 E:\ljx\MyProject\F.A.P.I\F.A.P.I\bin\Debug\F.A.P.I.exe
 E:\ljx\MyProject\F.A.P.I\F.A.P.I\bin\Debug\F.A.P.I.pdb
-E:\ljx\MyProject\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.csprojResolveAssemblyReference.cache
 E:\ljx\MyProject\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.Form1.resources
 E:\ljx\MyProject\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.Properties.Resources.resources
 E:\ljx\MyProject\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.csproj.GenerateResource.Cache
+E:\ljx\MyProject\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.csprojResolveAssemblyReference.cache
+E:\ljx\MyProject\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.Form2.resources
+E:\ljx\MyProject\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.Form3.resources

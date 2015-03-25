@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.button1 = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.titleCN = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.titleJP = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -40,20 +39,34 @@
             this.timeCN = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.newBgm = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.isOrderRabbit = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.longepisode = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.episode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.maxepisode = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.searchKeyword = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.fansub = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
+            this.lastDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clearTime = new System.Windows.Forms.DataGridViewButtonColumn();
             this.panel1 = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.button6 = new System.Windows.Forms.Button();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.button5 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.comboBox3 = new System.Windows.Forms.ComboBox();
+            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.comboBox4 = new System.Windows.Forms.ComboBox();
+            this.button7 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.panel1.SuspendLayout();
@@ -61,17 +74,12 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.panel2.SuspendLayout();
+            this.splitContainer2.Panel1.SuspendLayout();
+            this.splitContainer2.Panel2.SuspendLayout();
+            this.splitContainer2.SuspendLayout();
+            this.panel3.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(3, 12);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(146, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "FAPI!";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // dataGridView1
             // 
@@ -87,31 +95,40 @@
             this.timeCN,
             this.newBgm,
             this.isOrderRabbit,
+            this.longepisode,
             this.episode,
+            this.maxepisode,
             this.searchKeyword,
-            this.fansub});
+            this.fansub,
+            this.lastDate,
+            this.clearTime});
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 23;
-            this.dataGridView1.Size = new System.Drawing.Size(986, 110);
+            this.dataGridView1.Size = new System.Drawing.Size(1362, 110);
             this.dataGridView1.TabIndex = 6;
+            this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
             this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
             // 
             // titleCN
             // 
+            this.titleCN.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.titleCN.DataPropertyName = "titleCN";
             this.titleCN.FillWeight = 45.45454F;
-            this.titleCN.HeaderText = "titleCN";
+            this.titleCN.HeaderText = "标题";
             this.titleCN.MinimumWidth = 200;
             this.titleCN.Name = "titleCN";
             this.titleCN.ReadOnly = true;
+            this.titleCN.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.titleCN.Width = 200;
             // 
             // titleJP
             // 
             this.titleJP.DataPropertyName = "titleJP";
             this.titleJP.HeaderText = "titleJP";
             this.titleJP.Name = "titleJP";
+            this.titleJP.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.titleJP.Visible = false;
             // 
             // officalSite
@@ -119,6 +136,7 @@
             this.officalSite.DataPropertyName = "officalSite";
             this.officalSite.HeaderText = "officalSite";
             this.officalSite.Name = "officalSite";
+            this.officalSite.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.officalSite.Visible = false;
             // 
             // weekDayJP
@@ -126,6 +144,7 @@
             this.weekDayJP.DataPropertyName = "weekDayJP";
             this.weekDayJP.HeaderText = "weekDayJP";
             this.weekDayJP.Name = "weekDayJP";
+            this.weekDayJP.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.weekDayJP.Visible = false;
             // 
             // weekDayCN
@@ -133,6 +152,7 @@
             this.weekDayCN.DataPropertyName = "weekDayCN";
             this.weekDayCN.HeaderText = "weekDayCN";
             this.weekDayCN.Name = "weekDayCN";
+            this.weekDayCN.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.weekDayCN.Visible = false;
             // 
             // timeJP
@@ -140,6 +160,7 @@
             this.timeJP.DataPropertyName = "timeJP";
             this.timeJP.HeaderText = "timeJP";
             this.timeJP.Name = "timeJP";
+            this.timeJP.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.timeJP.Visible = false;
             // 
             // timeCN
@@ -147,6 +168,7 @@
             this.timeCN.DataPropertyName = "timeCN";
             this.timeCN.HeaderText = "timeCN";
             this.timeCN.Name = "timeCN";
+            this.timeCN.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.timeCN.Visible = false;
             // 
             // newBgm
@@ -154,38 +176,67 @@
             this.newBgm.DataPropertyName = "newBgm";
             this.newBgm.HeaderText = "newBgm";
             this.newBgm.Name = "newBgm";
+            this.newBgm.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.newBgm.Visible = false;
             // 
             // isOrderRabbit
             // 
+            this.isOrderRabbit.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.isOrderRabbit.DataPropertyName = "isOrderRabbit";
             this.isOrderRabbit.FalseValue = "0";
-            this.isOrderRabbit.FillWeight = 118.1818F;
-            this.isOrderRabbit.HeaderText = "isOrderRabbit";
-            this.isOrderRabbit.MinimumWidth = 100;
+            this.isOrderRabbit.HeaderText = "是否订阅兔子";
+            this.isOrderRabbit.MinimumWidth = 90;
             this.isOrderRabbit.Name = "isOrderRabbit";
             this.isOrderRabbit.TrueValue = "1";
+            this.isOrderRabbit.Width = 90;
+            // 
+            // longepisode
+            // 
+            this.longepisode.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.longepisode.DataPropertyName = "longepisode";
+            this.longepisode.FalseValue = "0";
+            this.longepisode.HeaderText = "年/半年 番";
+            this.longepisode.MinimumWidth = 80;
+            this.longepisode.Name = "longepisode";
+            this.longepisode.TrueValue = "1";
+            this.longepisode.Width = 80;
             // 
             // episode
             // 
+            this.episode.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.episode.DataPropertyName = "episode";
-            this.episode.HeaderText = "episode";
-            this.episode.MinimumWidth = 60;
+            this.episode.HeaderText = "集数";
+            this.episode.MinimumWidth = 40;
             this.episode.Name = "episode";
+            this.episode.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.episode.Width = 40;
+            // 
+            // maxepisode
+            // 
+            this.maxepisode.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.maxepisode.DataPropertyName = "maxepisode";
+            this.maxepisode.HeaderText = "最大集数";
+            this.maxepisode.MinimumWidth = 80;
+            this.maxepisode.Name = "maxepisode";
+            this.maxepisode.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.maxepisode.Width = 80;
             // 
             // searchKeyword
             // 
+            this.searchKeyword.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.searchKeyword.DataPropertyName = "searchKeyword";
             this.searchKeyword.FillWeight = 118.1818F;
-            this.searchKeyword.HeaderText = "searchKeyword";
+            this.searchKeyword.HeaderText = "搜索关键字";
             this.searchKeyword.MinimumWidth = 200;
             this.searchKeyword.Name = "searchKeyword";
+            this.searchKeyword.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // fansub
             // 
+            this.fansub.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.fansub.DataPropertyName = "fansub";
             this.fansub.FillWeight = 118.1818F;
-            this.fansub.HeaderText = "fansub";
+            this.fansub.HeaderText = "字幕组";
             this.fansub.Items.AddRange(new object[] {
             "极影字幕",
             "HKG字幕組",
@@ -216,42 +267,26 @@
             this.fansub.MinimumWidth = 150;
             this.fansub.Name = "fansub";
             this.fansub.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.fansub.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.fansub.Width = 150;
             // 
-            // comboBox1
+            // lastDate
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "Sun",
-            "Mon",
-            "Tue",
-            "Wed",
-            "Thu",
-            "Fri",
-            "Sat"});
-            this.comboBox1.Location = new System.Drawing.Point(184, 15);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(100, 20);
-            this.comboBox1.TabIndex = 7;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.lastDate.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.lastDate.DataPropertyName = "lastDate";
+            this.lastDate.HeaderText = "下次执行时间";
+            this.lastDate.MinimumWidth = 150;
+            this.lastDate.Name = "lastDate";
+            this.lastDate.ReadOnly = true;
+            this.lastDate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.lastDate.Width = 150;
             // 
-            // comboBox2
+            // clearTime
             // 
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(287, 15);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(100, 20);
-            this.comboBox2.TabIndex = 8;
-            this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
-            // 
-            // comboBox3
-            // 
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(391, 15);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(100, 20);
-            this.comboBox3.TabIndex = 9;
-            this.comboBox3.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
+            this.clearTime.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.clearTime.HeaderText = "清空时间";
+            this.clearTime.MinimumWidth = 60;
+            this.clearTime.Name = "clearTime";
+            this.clearTime.Width = 60;
             // 
             // panel1
             // 
@@ -259,7 +294,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(986, 110);
+            this.panel1.Size = new System.Drawing.Size(1362, 110);
             this.panel1.TabIndex = 10;
             // 
             // splitContainer1
@@ -277,65 +312,118 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.panel1);
-            this.splitContainer1.Size = new System.Drawing.Size(986, 162);
+            this.splitContainer1.Size = new System.Drawing.Size(1362, 162);
             this.splitContainer1.SplitterDistance = 48;
             this.splitContainer1.TabIndex = 11;
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.button5);
-            this.panel2.Controls.Add(this.button4);
-            this.panel2.Controls.Add(this.button3);
-            this.panel2.Controls.Add(this.button2);
-            this.panel2.Controls.Add(this.checkBox1);
-            this.panel2.Controls.Add(this.label1);
-            this.panel2.Controls.Add(this.button1);
-            this.panel2.Controls.Add(this.comboBox1);
-            this.panel2.Controls.Add(this.comboBox3);
-            this.panel2.Controls.Add(this.comboBox2);
+            this.panel2.Controls.Add(this.splitContainer2);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(986, 48);
+            this.panel2.Size = new System.Drawing.Size(1362, 48);
             this.panel2.TabIndex = 12;
+            // 
+            // splitContainer2
+            // 
+            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.splitContainer2.IsSplitterFixed = true;
+            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Name = "splitContainer2";
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add(this.panel3);
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.panel4);
+            this.splitContainer2.Panel2.Controls.Add(this.comboBox4);
+            this.splitContainer2.Panel2.Controls.Add(this.button7);
+            this.splitContainer2.Panel2.Controls.Add(this.label1);
+            this.splitContainer2.Size = new System.Drawing.Size(1362, 48);
+            this.splitContainer2.SplitterDistance = 564;
+            this.splitContainer2.TabIndex = 17;
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.button6);
+            this.panel3.Controls.Add(this.checkBox2);
+            this.panel3.Controls.Add(this.button5);
+            this.panel3.Controls.Add(this.button4);
+            this.panel3.Controls.Add(this.button3);
+            this.panel3.Controls.Add(this.button2);
+            this.panel3.Controls.Add(this.checkBox1);
+            this.panel3.Controls.Add(this.button1);
+            this.panel3.Controls.Add(this.comboBox1);
+            this.panel3.Controls.Add(this.comboBox3);
+            this.panel3.Controls.Add(this.comboBox2);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.Location = new System.Drawing.Point(0, 0);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(564, 48);
+            this.panel3.TabIndex = 0;
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(319, 4);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(29, 43);
+            this.button6.TabIndex = 27;
+            this.button6.Text = "转移";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(474, 30);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(48, 16);
+            this.checkBox2.TabIndex = 26;
+            this.checkBox2.Text = "全选";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(620, 15);
+            this.button5.Location = new System.Drawing.Point(396, 4);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(31, 23);
-            this.button5.TabIndex = 15;
+            this.button5.TabIndex = 25;
             this.button5.Text = "del";
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(581, 15);
+            this.button4.Location = new System.Drawing.Point(357, 4);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(34, 23);
-            this.button4.TabIndex = 14;
+            this.button4.TabIndex = 24;
             this.button4.Text = "add";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(657, 15);
+            this.button3.Location = new System.Drawing.Point(433, 4);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(39, 23);
-            this.button3.TabIndex = 13;
+            this.button3.TabIndex = 23;
             this.button3.Text = "help";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(494, 15);
+            this.button2.Location = new System.Drawing.Point(357, 26);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(86, 23);
-            this.button2.TabIndex = 12;
-            this.button2.Text = "downloadsoft";
+            this.button2.Size = new System.Drawing.Size(115, 23);
+            this.button2.TabIndex = 22;
+            this.button2.Text = "设置下载软件";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -344,39 +432,154 @@
             this.checkBox1.AutoSize = true;
             this.checkBox1.Checked = true;
             this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(154, 18);
+            this.checkBox1.Location = new System.Drawing.Point(474, 9);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(30, 16);
-            this.checkBox1.TabIndex = 11;
-            this.checkBox1.Text = " ";
+            this.checkBox1.Size = new System.Drawing.Size(90, 16);
+            this.checkBox1.TabIndex = 21;
+            this.checkBox1.Text = " 只显示订阅";
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(0, 9);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(146, 23);
+            this.button1.TabIndex = 17;
+            this.button1.Text = "FAPI!";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "Sun",
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"});
+            this.comboBox1.Location = new System.Drawing.Point(150, 11);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(100, 20);
+            this.comboBox1.TabIndex = 18;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // 
+            // comboBox3
+            // 
+            this.comboBox3.FormattingEnabled = true;
+            this.comboBox3.Location = new System.Drawing.Point(255, 26);
+            this.comboBox3.Name = "comboBox3";
+            this.comboBox3.Size = new System.Drawing.Size(60, 20);
+            this.comboBox3.TabIndex = 20;
+            this.comboBox3.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
+            // 
+            // comboBox2
+            // 
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Location = new System.Drawing.Point(255, 2);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(60, 20);
+            this.comboBox2.TabIndex = 19;
+            this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.checkBox3);
+            this.panel4.Controls.Add(this.checkBox4);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel4.Location = new System.Drawing.Point(446, 0);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(152, 48);
+            this.panel4.TabIndex = 16;
+            // 
+            // checkBox3
+            // 
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Dock = System.Windows.Forms.DockStyle.Top;
+            this.checkBox3.Location = new System.Drawing.Point(0, 0);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(152, 16);
+            this.checkBox3.TabIndex = 14;
+            this.checkBox3.Text = "无视时间限制";
+            this.checkBox3.UseVisualStyleBackColor = true;
+            // 
+            // checkBox4
+            // 
+            this.checkBox4.AutoSize = true;
+            this.checkBox4.Checked = true;
+            this.checkBox4.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox4.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.checkBox4.Location = new System.Drawing.Point(0, 32);
+            this.checkBox4.Name = "checkBox4";
+            this.checkBox4.Size = new System.Drawing.Size(152, 16);
+            this.checkBox4.TabIndex = 15;
+            this.checkBox4.Text = "种子/磁链(打ti系种子)";
+            this.checkBox4.UseVisualStyleBackColor = true;
+            // 
+            // comboBox4
+            // 
+            this.comboBox4.Dock = System.Windows.Forms.DockStyle.Right;
+            this.comboBox4.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox4.FormattingEnabled = true;
+            this.comboBox4.Items.AddRange(new object[] {
+            "dmhy",
+            "ktxp",
+            "dmhy临时版"});
+            this.comboBox4.Location = new System.Drawing.Point(598, 0);
+            this.comboBox4.Name = "comboBox4";
+            this.comboBox4.Size = new System.Drawing.Size(121, 20);
+            this.comboBox4.TabIndex = 13;
+            // 
+            // button7
+            // 
+            this.button7.Dock = System.Windows.Forms.DockStyle.Right;
+            this.button7.Location = new System.Drawing.Point(719, 0);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(75, 48);
+            this.button7.TabIndex = 12;
+            this.button7.Text = "编辑字幕组";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(701, 18);
+            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label1.Font = new System.Drawing.Font("MS PMincho", 8F);
+            this.label1.Location = new System.Drawing.Point(0, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(65, 12);
-            this.label1.TabIndex = 10;
-            this.label1.Text = "(⌒,_ゝ⌒)";
+            this.label1.Size = new System.Drawing.Size(794, 48);
+            this.label1.TabIndex = 11;
+            this.label1.Text = "ゆっくりできない！！！";
+            this.label1.Click += new System.EventHandler(this.label1_Click_1);
+            this.label1.DoubleClick += new System.EventHandler(this.label1_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(986, 162);
+            this.ClientSize = new System.Drawing.Size(1362, 162);
             this.Controls.Add(this.splitContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.ImeMode = System.Windows.Forms.ImeMode.Alpha;
             this.Name = "Form1";
-            this.Text = "F.A.P.I.";
+            this.Text = "F.A.P.I. ver.1.0.6";
+            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
+            this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel2.ResumeLayout(false);
+            this.splitContainer2.ResumeLayout(false);
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -387,15 +590,27 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.ComboBox comboBox2;
-        private System.Windows.Forms.ComboBox comboBox3;
+        public  System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.SplitContainer splitContainer2;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox comboBox3;
+        private System.Windows.Forms.ComboBox comboBox2;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.ComboBox comboBox4;
+        private System.Windows.Forms.CheckBox checkBox3;
         private System.Windows.Forms.DataGridViewTextBoxColumn titleCN;
         private System.Windows.Forms.DataGridViewTextBoxColumn titleJP;
         private System.Windows.Forms.DataGridViewTextBoxColumn officalSite;
@@ -405,14 +620,15 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn timeCN;
         private System.Windows.Forms.DataGridViewTextBoxColumn newBgm;
         private System.Windows.Forms.DataGridViewCheckBoxColumn isOrderRabbit;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn longepisode;
         private System.Windows.Forms.DataGridViewTextBoxColumn episode;
+        private System.Windows.Forms.DataGridViewTextBoxColumn maxepisode;
         private System.Windows.Forms.DataGridViewTextBoxColumn searchKeyword;
         private System.Windows.Forms.DataGridViewComboBoxColumn fansub;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.DataGridViewTextBoxColumn lastDate;
+        private System.Windows.Forms.DataGridViewButtonColumn clearTime;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.CheckBox checkBox4;
     }
 }
 

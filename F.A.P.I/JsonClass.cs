@@ -19,8 +19,14 @@ namespace F.A.P.I
         public string newBgm { get; set; }
         public string isOrderRabbit { get; set; }
 
+        public string maxepisode { get; set; }
         public string episode { get; set; }
         public string searchKeyword { get; set; }
         public string fansub { get; set; }
+        public string longepisode { get; set; }
+
+        public string lastDate { get; set; }
+
+
     }
 }

@@ -18,12 +18,25 @@ namespace F.A.P.I
             prompt.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 
             prompt.Width = 500;
-            prompt.Height = 150;
+            prompt.Height = 550;
             prompt.Text = caption;
             prompt.StartPosition = FormStartPosition.CenterScreen;
             Label textLabel = new Label() { Left = 50, Top = 20, Text = text, Width = 400 };
-            TextBox textBox = new TextBox() { Left = 50, Top = 50, Width = 400 };
-            Button confirmation = new Button() { Text = "Ok", Left = 350, Width = 100, Top = 70 };
+            TextBox textBox = new TextBox() { Left = 50, Top = 50, Width = 400,Height=200 };
+            textBox.Multiline = true;
+
+            // Set the Multiline property to true.
+            textBox.Multiline = true;
+            // Add vertical scroll bars to the TextBox control.
+            textBox.ScrollBars = ScrollBars.Vertical;
+            // Allow the RETURN key to be entered in the TextBox control.
+            textBox.AcceptsReturn = true;
+            // Allow the TAB key to be entered in the TextBox control.
+            textBox.AcceptsTab = true;
+            // Set WordWrap to true to allow text to wrap to the next line.
+            textBox.WordWrap = true;
+
+            Button confirmation = new Button() { Text = "Ok", Left = 350, Width = 100, Top = textBox.Top + 70 + textBox.Height };
             confirmation.Click += (sender, e) => { prompt.Close(); };
             prompt.Controls.Add(textBox);
             prompt.Controls.Add(confirmation);
