@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.titleCN = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -68,6 +69,8 @@
             this.comboBox4 = new System.Windows.Forms.ComboBox();
             this.button7 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.checkBox5 = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.panel1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -487,6 +490,7 @@
             // 
             // panel4
             // 
+            this.panel4.Controls.Add(this.checkBox5);
             this.panel4.Controls.Add(this.checkBox3);
             this.panel4.Controls.Add(this.checkBox4);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Right;
@@ -556,6 +560,25 @@
             this.label1.Click += new System.EventHandler(this.label1_Click_1);
             this.label1.DoubleClick += new System.EventHandler(this.label1_Click);
             // 
+            // notifyIcon1
+            // 
+            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
+            this.notifyIcon1.Text = "notifyIcon1";
+            this.notifyIcon1.Visible = true;
+            this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
+            // 
+            // checkBox5
+            // 
+            this.checkBox5.AutoSize = true;
+            this.checkBox5.Checked = true;
+            this.checkBox5.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox5.Location = new System.Drawing.Point(0, 16);
+            this.checkBox5.Name = "checkBox5";
+            this.checkBox5.Size = new System.Drawing.Size(96, 16);
+            this.checkBox5.TabIndex = 16;
+            this.checkBox5.Text = "5分钟fapYi次";
+            this.checkBox5.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -565,8 +588,9 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.ImeMode = System.Windows.Forms.ImeMode.Alpha;
             this.Name = "Form1";
-            this.Text = "F.A.P.I. ver.1.0.6";
+            this.Text = "F.A.P.I. ver.1.0.7";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.Resize += new System.EventHandler(this.Form1_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -629,6 +653,8 @@
         private System.Windows.Forms.DataGridViewButtonColumn clearTime;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.CheckBox checkBox4;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.CheckBox checkBox5;
     }
 }
 

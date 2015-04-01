@@ -18,12 +18,12 @@ using NSoup.Nodes;
 using Newtonsoft.Json;
 using System.Collections.Specialized;
 using System.Net.NetworkInformation;
+using System.Timers;
 
 namespace F.A.P.I
 {
     public partial class Form1 : Form
     {
-
         public List<JsonClass> jsonList;
         public List<archive> archiveList;
         public string bgmlist = "http://bgmlist.com/";
@@ -47,31 +47,33 @@ namespace F.A.P.I
 
         public static ArrayList lad; /* 临时dmhy 预先加载10页 */
 
+        public ContextMenu contextMenu1 = new ContextMenu();
+
         public Form1()
         {
             System.Net.ServicePointManager.DefaultConnectionLimit = 100;
             try
             {
                 /*
-  * string sosososo = "bt.ktxp.com";
-  * bool qsdfg = Ping(sosososo); / * true; * /
-  * if (!qsdfg)
-  * {
-  *    MessageBox.Show(@"极影又香了");
-  * }
-  * sosososo = "share.dmhy.org";
-  * qsdfg = Ping(sosososo);
-  * if (!qsdfg)
-  * {
-  *    MessageBox.Show(@"花园又香了");
-  * }
-  * sosososo = "www.nyaa.se";
-  * qsdfg = Ping(sosososo);
-  * if (!qsdfg)
-  * {
-  *    MessageBox.Show(@"喵又香了");
-  * }
-  */
+                 * string sosososo = "bt.ktxp.com";
+                 * bool qsdfg = Ping(sosososo); / * true; * /
+                 * if (!qsdfg)
+                 * {
+                 *    MessageBox.Show(@"极影又香了");
+                 * }
+                 * sosososo = "share.dmhy.org";
+                 * qsdfg = Ping(sosososo);
+                 * if (!qsdfg)
+                 * {
+                 *    MessageBox.Show(@"花园又香了");
+                 * }
+                 * sosososo = "www.nyaa.se";
+                 * qsdfg = Ping(sosososo);
+                 * if (!qsdfg)
+                 * {
+                 *    MessageBox.Show(@"喵又香了");
+                 * }
+                 */
                 string[] bababab = "GB MP4 720p 1080p 576p 720P 1080P 576P 新番 BIG5 1月 2月 3月 4月 5月 6月 7月 8月 9月 10月 11月 12月 第 话 讨论 一月 二月 三月 四月 五月 六月 七月 八月 九月 十月 十一月 十二月".Split(' ');
                 filterList = bababab.ToList();
 
@@ -107,16 +109,50 @@ namespace F.A.P.I
                 initcombobox();
                 initflag = true;
                 comboBox1comboBox2_SelectedIndexChanged();
+
+
+                /* Add menu items to context menu. */
+                MenuItem MenuItem_1 = contextMenu1.MenuItems.Add("F.A.P.I.!");
+                MenuItem MenuItem_2 = contextMenu1.MenuItems.Add("E&xit");
+
+                MenuItem_1.Click += new EventHandler(button1_Click);
+                MenuItem_2.Click += new EventHandler(item_Click2);
+
+
+                this.notifyIcon1.Text = "F.A.P.I.";
+                this.notifyIcon1.ContextMenu = contextMenu1;
+
+
                 downloadsoftpath = readdownloadsoftpath();
                 if (downloadsoftpath != null && downloadsoftpath != "")
                     Process.Start(@downloadsoftpath);
 
 
+                System.Timers.Timer aTimer = new System.Timers.Timer();
+                aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+                aTimer.Interval = 1000*60*5;
+                aTimer.Enabled = true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
+        }
+
+
+        void item_Click2(object sender, EventArgs e)
+        {
+            ToolStripItem clickedItem = sender as ToolStripItem;
+            Application.Exit();
+            /* your code here */
+        }
+
+
+        /* Specify what you want to happen when the Elapsed event is raised. */
+        private void OnTimedEvent(object source, ElapsedEventArgs e)
+        {
+            if (checkBox5.CheckState == CheckState.Checked)
+                this.button1_Click(null, null);
         }
 
 
@@ -196,7 +232,6 @@ KPDM
                     CB.Items.Add(a);
                 }
                 ((DataGridViewComboBoxColumn)dataGridView1.Columns["fansub"]).DataSource = CB.Items;
-
             }
         }
 
@@ -225,7 +260,7 @@ KPDM
                 string sort_addate = "&order=addate";
                 string sort_seeders = "&order=seeders";
                 string url = "http://bt.ktxp.com/search.php?keyword=" + keywordURL
-                         + "&sort_id=12";
+                                  + "&sort_id=12";
                 int param = 0;
                 if (param == 0)
                 {
@@ -299,6 +334,7 @@ KPDM
             return (str_url);
         }
 
+
         private bool filter(JsonClass jc, Element td)
         {
             bool filterflag = false;
@@ -319,18 +355,26 @@ KPDM
                 }
             }
             string asd = "";
-            //if (jc.episode.Equals(comboBox2.SelectedItem.ToString()))
-            //{
+
+
+            /*
+             * if (jc.episode.Equals(comboBox2.SelectedItem.ToString()))
+             * {
+             */
             NSoup.Select.Elements td_a = td.Select("a");
-            //NSoup.Select.Elements td_span = td.Select("span");
+            /* NSoup.Select.Elements td_span = td.Select("span"); */
             foreach (Element a in td_a)
             {
                 asd += a.Text();
             }
-            //foreach (Element a in td_span)
-            //{
-            //    asd += a.Text();
-            //}
+
+
+            /*
+             * foreach (Element a in td_span)
+             * {
+             *    asd += a.Text();
+             * }
+             */
             foreach (string s in filterList)
             {
                 asd = asd.Replace(s, " ");
@@ -344,8 +388,8 @@ KPDM
                 filterflag = true;
             }
 
-            //}
-            return filterflag;
+            /* } */
+            return (filterflag);
         }
 
 
@@ -430,8 +474,10 @@ KPDM
             List<string> filterEpisode = new List<string>();
             if (!bb)
             {
-                //if (jc.episode.Equals(comboBox2.SelectedItem.ToString()))
-                //{
+                /*
+                 * if (jc.episode.Equals(comboBox2.SelectedItem.ToString()))
+                 * {
+                 */
 
                 int countttttt = 0;
                 try
@@ -448,7 +494,7 @@ KPDM
                 {
                     filterEpisode.Add((q < 10 ? "0" + q : q + ""));
                 }
-                //}
+                /* } */
             }
             string str_url = "nothing";
             keywordURL = keywordURL.Replace("\"", "");
@@ -541,20 +587,20 @@ KPDM
 
                         if (count >= countmax)
                         {
-                            //Element torrent = tr.Select("td:eq(3)").First().Select("a[class=download-arrow arrow-torrent]").First(); /* 种子地址 */
-                            Element magnet  = tr.Select("td:eq(3)").First().Select("a[class=download-arrow arrow-magnet]").First();/* 磁链地址 */
-                            Element innerlink = tr.Select("td:eq(2)").First().Select("a").Last();/* 内部链接地址 用于获取地址 */
+                            /* Element torrent = tr.Select("td:eq(3)").First().Select("a[class=download-arrow arrow-torrent]").First(); / * 种子地址 * / */
+                            Element magnet = tr.Select("td:eq(3)").First().Select("a[class=download-arrow arrow-magnet]").First();     /* 磁链地址 */
+                            Element innerlink = tr.Select("td:eq(2)").First().Select("a").Last();                                         /* 内部链接地址 用于获取地址 */
 
                             countmax = count;
                             if (checkBox4.CheckState == CheckState.Checked)
                             {
-                                //str_url = dmhy + torrent.Attr("href");
+                                /* str_url = dmhy + torrent.Attr("href"); */
                                 string inner_url = dmhy + innerlink.Attr("href");
                                 string innerhtmlString = Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(inner_url));
                                 Document innerdoc = NSoup.NSoupClient.Parse(innerhtmlString);
                                 Element torrent = innerdoc.GetElementById("tabs-1").Select("a").First();
-                                str_url = "http:"+torrent.Attr("href");
-                                //str_url = magnet.Attr("href");
+                                str_url = "http:" + torrent.Attr("href");
+                                /* str_url = magnet.Attr("href"); */
                             }
                             else
                             {
@@ -621,7 +667,6 @@ KPDM
                 {
                     MessageBox.Show(ex.Message);
                 }
-
             }
         }
 
@@ -701,7 +746,6 @@ KPDM
                 {
                     MessageBox.Show(ex.ToString());
                 }
-
             }
             dataGridView1.DataSource = (from a in jsonList
                                         where Convert.ToInt32(a.weekDayCN) == day
@@ -777,7 +821,6 @@ KPDM
 
             try
             {
-
                 while (Rabbits != 0)
                 {
                     Rabbits = 0;
@@ -790,11 +833,9 @@ KPDM
                         {
                             if (checkBox3.CheckState == CheckState.Checked)
                             {
-
                             }
                             else
                             {
-
                                 dateVal = DateTime.ParseExact(jc.lastDate, "yyyy-MM-dd HH:mm", culture);
                                 ts = dateVal - now;
                                 day = ts.Days; /* 相差天数 ; */
@@ -802,10 +843,7 @@ KPDM
                                 {
                                     continue;
                                 }
-
-
                             }
-
                         }
 
 
@@ -851,17 +889,15 @@ KPDM
                                 keyword = jc.searchKeyword + " " + jc.episode + " " + jc.fansub + filterEpisode;
                                 keyword = getTorrentFromNyaa(keyword, bb);
                             }
-
                             else if (comboBox4.SelectedItem.ToString().IndexOf("临时版") > -1)
                             {
                                 keyword = getTorrentFromDmhy_1(jc.searchKeyword, jc.episode, jc.fansub, filterEpisode);
                             }
 
 
-
                             if (keyword != null && keyword != "nothing" && keyword != "fail" && keyword != "time")
                             {
-                                if (comboBox4.SelectedItem.ToString().IndexOf("dmhy") > -1 )
+                                if (comboBox4.SelectedItem.ToString().IndexOf("dmhy") > -1)
                                 {
                                     if (checkBox4.CheckState != CheckState.Checked)
                                     {
@@ -871,7 +907,7 @@ KPDM
                                     {
                                         torrentList += keyword + "\n";
                                         strCmdText.Add(keyword);
-                                    } 
+                                    }
                                 }
                                 else
                                 {
@@ -931,24 +967,26 @@ KPDM
                         jc.lastDate = getlastDate(aaa.weekDayJP, now);
                     }
 
-                    //now.ToString("yyyy-MM-dd HH:mm");
+                    /* now.ToString("yyyy-MM-dd HH:mm"); */
                 }
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.ToString());
             }
-            /*
-            if (strCmdText.Count>0)
-            {
-                System.Diagnostics.Process.Start("explorer", "http://share.dmhy.org/");
-            }
 
-            foreach (string s in strCmdText)
-            {
-                System.Diagnostics.Process.Start("explorer", s);
-            }
-            */
+
+            /*
+             * if (strCmdText.Count>0)
+             * {
+             *  System.Diagnostics.Process.Start("explorer", "http://share.dmhy.org/");
+             * }
+             *
+             * foreach (string s in strCmdText)
+             * {
+             *  System.Diagnostics.Process.Start("explorer", s);
+             * }
+             */
 
             if (torrentList != null)
             {
@@ -956,6 +994,8 @@ KPDM
             }
             this.dataGridView1.Refresh();
 
+
+            totxt(torrentList);
 
             if (kwList.Count != 0 || errorlist.Count != 0)
             {
@@ -991,9 +1031,19 @@ KPDM
             }
         }
 
+        private void totxt(string torrentList)
+        {
+            string a=appdataFAPI+"/torrent/";
+            if (!Directory.Exists(a)       )         /* 判断文件夹是否已经存在 */
+            {
+                Directory.CreateDirectory(a);      /* 创建文件夹 */
+            }
+            System.IO.File.WriteAllText(Path.Combine(a, DateTime.Now.ToString( "yyyyMMddHHmmssffffff")+".txt"), torrentList);
+        }
+
+
         private string getlastDate(string p, DateTime now)
         {
-
             int i = Convert.ToInt32(now.DayOfWeek);
             TimeSpan ts = new TimeSpan(0, 0, 0);
             now = now.Date + ts;
@@ -1001,7 +1051,7 @@ KPDM
             if (i.ToString().Equals(p))
             {
                 now = now.AddDays(7);
-                //return now.ToString("yyyy-MM-dd HH:mm");
+                /* return now.ToString("yyyy-MM-dd HH:mm"); */
             }
             else
             {
@@ -1011,11 +1061,8 @@ KPDM
                     i = Convert.ToInt32(now.DayOfWeek);
                 }
             }
-            //now = now.AddDays(7);
-            return now.ToString("yyyy-MM-dd HH:mm");
-
-
-
+            /* now = now.AddDays(7); */
+            return (now.ToString("yyyy-MM-dd HH:mm"));
         }
 
 
@@ -1069,14 +1116,14 @@ KPDM
                                 }
                                 if (count >= countmax)
                                 {
-                                   // Element torrent = doc.Select("table#topic_list").First().Select("tr:eq(" + i + ")").First().Select("td:eq(3)").First().Select("a[class=download-arrow arrow-torrent]").First(); /* 种子地址 */
+                                    /* Element torrent = doc.Select("table#topic_list").First().Select("tr:eq(" + i + ")").First().Select("td:eq(3)").First().Select("a[class=download-arrow arrow-torrent]").First(); / * 种子地址 * / */
 
                                     Element magnet = doc.Select("table#topic_list").First().Select("tr:eq(" + i + ")").First()
-                                              .Select("td:eq(3)").First().Select("a[class=download-arrow arrow-magnet]").First(); /* 磁链地址 */
+                                             .Select("td:eq(3)").First().Select("a[class=download-arrow arrow-magnet]").First(); /* 磁链地址 */
                                     countmax = count;
                                     if (checkBox4.CheckState == CheckState.Checked)
                                     {
-                                        //str_url = dmhy + torrent.Attr("href");
+                                        /* str_url = dmhy + torrent.Attr("href"); */
                                         str_url = magnet.Attr("href");
                                     }
                                     else
@@ -1146,7 +1193,7 @@ KPDM
                 JsonClass aaa = (from a in jsonList
                                  where a.titleCN == asdasd
                                  select a).ToList()[0];
-                //aaa.lastDate = "";
+                /* aaa.lastDate = ""; */
                 writeLocalJson(jsonList, jsonName);
                 dataGridView1.Refresh();
             }
@@ -1254,7 +1301,7 @@ KPDM
 4.  设置好后点击左上角按钮(FAPI!)，种子文件连接会添加到剪切板
 5.  如果是年番,请勾选longepisode,这样就可以无视 片时间>本季时间 (eg:8月22号发布的片>7月1号 )
 6.  右上角的无视时间限制,是用来取消 下次执行时间 限制的
-7.  add 添加一个新的片 del 删除 可多选  
+7.  add 添加一个新的片 del 删除 可多选
 8.  转移 用于换季的时候将年翻进度转移到新一季
 ";
             MessageBox.Show(asd);
@@ -1375,74 +1422,80 @@ KPDM
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            //get bilibili html for bangumi
+            /* get bilibili html for bangumi */
+
+
             /*
-            try
-            {
-                MyWebClient webClient = new MyWebClient();
-                string urlaaaaaaaaa = "http://www.bilibili.com/list/b--a--t-0---d---3.html";
-                string htmlString = "";
-                string bilibili="http://www.bilibili.com";
+             *         try
+             *         {
+             *             MyWebClient webClient = new MyWebClient();
+             *             string urlaaaaaaaaa = "http://www.bilibili.com/list/b--a--t-0---p---4.html";
+             *             string htmlString = "";
+             *             string bilibili="http://www.bilibili.com";
+             *
+             *             htmlString = Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(urlaaaaaaaaa));
+             *
+             *             Document doc = NSoup.NSoupClient.Parse(htmlString);
+             *             Document doctmp;
+             *
+             *             NSoup.Select.Elements table = doc.Select("ul[class=v_ul]").First().Select("li");
+             *
+             *
+             *             ArrayList al = new ArrayList();
+             *             ArrayList a2 = new ArrayList();
+             *             foreach (Element a in table)
+             *             {
+             *                 string href = bilibili+a.Select("div[class=t]").First().Select("a").First().Attr("href");
+             *                 string title = a.Select("div[class=t]").First().Select("a").First().Attr("title");
+             *
+             *                 htmlString = Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(href));
+             *                 doctmp= NSoup.NSoupClient.Parse(htmlString);
+             *                 string w = doctmp.Html();
+             *                 int ewqeqwwqewe = w.IndexOf("spid =") + "spid =".Length;
+             *                 int ewqeqwwqewe1=w.IndexOf("var is");
+             *                 if (ewqeqwwqewe1 == -1)
+             *                 {
+             *                     a2.Add(href + "," + title);
+             *                     continue;
+             *                 }
+             *
+             *                 string sid = w.Substring(ewqeqwwqewe, ewqeqwwqewe1 - ewqeqwwqewe);
+             *                 sid = System.Text.RegularExpressions.Regex.Replace(sid, @"[^\d]", "");
+             *                 //vidbox zt
+             *                 al.Add("http://www.bilibili.com/sppage/bangumi-" + sid + "-1.html," + title);
+             *             }
+             *             string sum = "";
+             *             foreach (string a in al)
+             *             {
+             *                 //string bfr = a.Split(',')[0];
+             *                 //htmlString = Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(bfr));
+             *                 //doctmp = NSoup.NSoupClient.Parse(htmlString);
+             *                 //NSoup.Select.Elements ulul = doctmp.Select("ul[class=vidbox zt]").First().Select("li");
+             *                 //foreach (Element ty in ulul)
+             *                 //{
+             *                 //    string href = bilibili + ty.Select("a").First().Attr("href");
+             *                 //    string title = ty.Select("a").First().Text();
+             *                 //}
+             *                 sum += a+"\n";
+             *             }
+             *             foreach (string a in a2)
+             *             {
+             *                 sum += a + "\n";
+             *             }
+             *
+             *             sum += "";
+             *         }
+             *         catch (Exception dasdasdasd)
+             *         {
+             *             string asd222 = "";
+             *         }
+             *
+             */
 
-                htmlString = Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(urlaaaaaaaaa));
 
-                Document doc = NSoup.NSoupClient.Parse(htmlString);
-                Document doctmp;
-
-                NSoup.Select.Elements table = doc.Select("ul[class=v_ul]").First().Select("li");
+            /* get pokemon pkm */
 
 
-                ArrayList al = new ArrayList();
-                ArrayList a2 = new ArrayList();
-                foreach (Element a in table)
-                {
-                    string href = bilibili+a.Select("div[class=t]").First().Select("a").First().Attr("href");
-                    string title = a.Select("div[class=t]").First().Select("a").First().Attr("title");
-
-                    htmlString = Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(href));
-                    doctmp= NSoup.NSoupClient.Parse(htmlString);
-                    string w = doctmp.Html();
-                    int ewqeqwwqewe = w.IndexOf("spid =") + "spid =".Length;
-                    int ewqeqwwqewe1=w.IndexOf("var is");
-                    if (ewqeqwwqewe1 == -1)
-                    {
-                        a2.Add(href + "," + title);
-                        continue;
-                    }
-
-                    string sid = w.Substring(ewqeqwwqewe, ewqeqwwqewe1 - ewqeqwwqewe);
-                    sid = System.Text.RegularExpressions.Regex.Replace(sid, @"[^\d]", "");
-                    //vidbox zt
-                    al.Add("http://www.bilibili.com/sppage/bangumi-" + sid + "-1.html," + title);
-                }
-                string sum = "";
-                foreach (string a in al)
-                {
-                    //string bfr = a.Split(',')[0];
-                    //htmlString = Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(bfr));
-                    //doctmp = NSoup.NSoupClient.Parse(htmlString);
-                    //NSoup.Select.Elements ulul = doctmp.Select("ul[class=vidbox zt]").First().Select("li");
-                    //foreach (Element ty in ulul)
-                    //{
-                    //    string href = bilibili + ty.Select("a").First().Attr("href");
-                    //    string title = ty.Select("a").First().Text();
-                    //}
-                    sum += a+"\n";
-                }
-                foreach (string a in a2)
-                {
-                    sum += a + "\n";
-                }
-
-                sum += "";
-            }
-            catch (Exception dasdasdasd)
-            {
-                string asd222 = "";
-            }
- */
-
-            //get pokemon pkm
             /*
              * try
              * {
@@ -1544,6 +1597,7 @@ KPDM
         {
         }
 
+
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.ColumnIndex == dataGridView1.Columns["clearTime"].Index && e.RowIndex >= 0)
@@ -1562,7 +1616,30 @@ KPDM
         public DataGridView getdataGridView1()
         {
             this.dataGridView1.Refresh();
-            return this.dataGridView1;
+            return (this.dataGridView1);
+        }
+
+
+        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Visible = true;
+                this.ShowInTaskbar = true;                         /* 显示在系统任务栏 */
+                this.WindowState = FormWindowState.Normal;       /* 还原窗体 */
+                /* this.notifyIcon1.Visible = false;  //托盘图标隐藏 */
+            }
+        }
+
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.WindowState = FormWindowState.Minimized;
+                this.Visible = false;
+                this.notifyIcon1.Visible = true;
+            }
         }
     }
 }
