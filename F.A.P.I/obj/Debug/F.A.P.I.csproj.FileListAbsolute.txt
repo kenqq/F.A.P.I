@@ -18,3 +18,13 @@ E:\ljx\MyProject\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.csproj.GenerateResource.Cache
 E:\ljx\MyProject\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.csprojResolveAssemblyReference.cache
 E:\ljx\MyProject\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.Form2.resources
 E:\ljx\MyProject\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.Form3.resources
+D:\Programming\c#\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.exe
+D:\Programming\c#\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.pdb
+D:\Programming\c#\F.A.P.I\F.A.P.I\bin\Debug\F.A.P.I.exe
+D:\Programming\c#\F.A.P.I\F.A.P.I\bin\Debug\F.A.P.I.pdb
+D:\Programming\c#\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.csprojResolveAssemblyReference.cache
+D:\Programming\c#\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.Form1.resources
+D:\Programming\c#\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.Form2.resources
+D:\Programming\c#\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.Form3.resources
+D:\Programming\c#\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.Properties.Resources.resources
+D:\Programming\c#\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.csproj.GenerateResource.Cache

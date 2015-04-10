@@ -197,7 +197,7 @@ namespace F.A.P.I
             else
             {
                 /* 第一行空格 */
-                string fansubtmp = @"
+                string fansubtmp = @" 
 极影
 HKG
 梦幻恋樱
@@ -515,11 +515,11 @@ KPDM
                 IFormatProvider culture = new CultureInfo("en-US", true);
                 /*下载网页源代码 */
                 MyWebClient webClient = new MyWebClient();
-                string dmhy = "https://share.dmhy.org";
+                string dmhy = "http://share.dmhy.org";
 
-                string url = "https://share.dmhy.org/topics/list?keyword=" + keywordURL + "&team_id=0&order=date-desc";
+                string url = "http://share.dmhy.org/topics/list?keyword=" + keywordURL + "&team_id=0&order=date-desc";
 
-                /* string url = "https://share.dmhy.org/"; */
+                /* string url = "http://share.dmhy.org/"; */
 
                 string htmlString = Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(url));
 
@@ -650,12 +650,20 @@ KPDM
         {
             MyWebClient webClient = new MyWebClient();
             string url = "http://bgmlist.com/json/archive.json";
+            bool local = System.IO.File.Exists(archive);
             try
             {
-                byte[] b = webClient.DownloadData(url);
-                string jsonText = Encoding.UTF8.GetString(b, 0, b.Length);
-                archiveList = JsonConvert.DeserializeObject<List<archive>>(jsonText);
-                System.IO.File.WriteAllText(archive, jsonText);
+                if (local)
+                {
+                    readLocalArchiveJson();
+                }
+                else
+                {
+                    byte[] b = webClient.DownloadData(url);
+                    string jsonText = Encoding.UTF8.GetString(b, 0, b.Length);
+                    archiveList = JsonConvert.DeserializeObject<List<archive>>(jsonText);
+                    System.IO.File.WriteAllText(archive, jsonText);
+                }
             }
             catch (Exception ex)
             {
@@ -1027,12 +1035,16 @@ KPDM
 
             if (handllist.Count == 1)
             {
+                if (checkBox5.CheckState != CheckState.Checked)
                 MessageBox.Show("完成鸟");
             }
         }
 
         private void totxt(string torrentList)
         {
+            if(torrentList==null || torrentList.Length<1){
+                return ;
+            }
             string a=appdataFAPI+"/torrent/";
             if (!Directory.Exists(a)       )         /* 判断文件夹是否已经存在 */
             {
@@ -1085,7 +1097,7 @@ KPDM
             }
 
 
-            string dmhy = "https://share.dmhy.org";
+            string dmhy = "http://share.dmhy.org";
 
             ArrayList lada = DmhyFiveDoces();
 
@@ -1158,7 +1170,7 @@ KPDM
 
                     for (int i = 1; i < 4 + 1; ++i)
                     {
-                        url = "https://share.dmhy.org/topics/list/sort_id/2/page/" + i;
+                        url = "http://share.dmhy.org/topics/list/sort_id/2/page/" + i;
                         lad.Add(NSoup.NSoupClient.Parse(Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(url))));
                     }
                 }
