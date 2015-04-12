@@ -72,10 +72,10 @@
             this.button8 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.panel7 = new System.Windows.Forms.Panel();
+            this.button9 = new System.Windows.Forms.Button();
             this.comboBox4 = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-            this.button9 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -355,7 +355,7 @@
             this.splitContainer2.Panel2.Controls.Add(this.panel6);
             this.splitContainer2.Panel2.Controls.Add(this.label1);
             this.splitContainer2.Size = new System.Drawing.Size(1362, 48);
-            this.splitContainer2.SplitterDistance = 564;
+            this.splitContainer2.SplitterDistance = 700;
             this.splitContainer2.TabIndex = 17;
             // 
             // panel3
@@ -374,7 +374,7 @@
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel3.Location = new System.Drawing.Point(0, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(564, 48);
+            this.panel3.Size = new System.Drawing.Size(700, 48);
             this.panel3.TabIndex = 0;
             // 
             // button6
@@ -502,7 +502,7 @@
             this.panel6.Controls.Add(this.panel5);
             this.panel6.Controls.Add(this.panel7);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel6.Location = new System.Drawing.Point(462, 0);
+            this.panel6.Location = new System.Drawing.Point(326, 0);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(332, 48);
             this.panel6.TabIndex = 8;
@@ -597,6 +597,16 @@
             this.panel7.Size = new System.Drawing.Size(91, 48);
             this.panel7.TabIndex = 7;
             // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(3, 26);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(82, 21);
+            this.button9.TabIndex = 14;
+            this.button9.Text = "hey!";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
             // comboBox4
             // 
             this.comboBox4.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -613,11 +623,11 @@
             // 
             // label1
             // 
-            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label1.Dock = System.Windows.Forms.DockStyle.Left;
             this.label1.Font = new System.Drawing.Font("MS PMincho", 8F);
             this.label1.Location = new System.Drawing.Point(0, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(794, 48);
+            this.label1.Size = new System.Drawing.Size(320, 48);
             this.label1.TabIndex = 11;
             this.label1.Text = "ゆっくりできない！！！";
             this.label1.Click += new System.EventHandler(this.label1_Click_1);
@@ -630,16 +640,6 @@
             this.notifyIcon1.Visible = true;
             this.notifyIcon1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseClick);
             this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
-            // 
-            // button9
-            // 
-            this.button9.Location = new System.Drawing.Point(3, 26);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(82, 21);
-            this.button9.TabIndex = 14;
-            this.button9.Text = "hey!";
-            this.button9.UseVisualStyleBackColor = true;
-            this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
             // Form1
             // 
