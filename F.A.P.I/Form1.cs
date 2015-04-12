@@ -1865,7 +1865,17 @@ KPDM
 
         private void notifyIcon1_MouseClick(object sender, MouseEventArgs e)
         {
-
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Visible = true;
+                this.ShowInTaskbar = true;                         /* 显示在系统任务栏 */
+                this.WindowState = FormWindowState.Normal;       /* 还原窗体 */
+                /* this.notifyIcon1.Visible = false;  //托盘图标隐藏 */
+            }
+            else
+            {
+                this.WindowState = FormWindowState.Minimized;
+            }
         }
     }
 }
