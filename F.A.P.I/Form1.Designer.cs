@@ -63,25 +63,35 @@
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.comboBox3 = new System.Windows.Forms.ComboBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.panel6 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
             this.checkBox5 = new System.Windows.Forms.CheckBox();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.checkBox4 = new System.Windows.Forms.CheckBox();
-            this.comboBox4 = new System.Windows.Forms.ComboBox();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.button8 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
+            this.panel7 = new System.Windows.Forms.Panel();
+            this.comboBox4 = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.button9 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             this.panel3.SuspendLayout();
+            this.panel6.SuspendLayout();
             this.panel4.SuspendLayout();
+            this.panel5.SuspendLayout();
+            this.panel7.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataGridView1
@@ -342,9 +352,7 @@
             // 
             // splitContainer2.Panel2
             // 
-            this.splitContainer2.Panel2.Controls.Add(this.panel4);
-            this.splitContainer2.Panel2.Controls.Add(this.comboBox4);
-            this.splitContainer2.Panel2.Controls.Add(this.button7);
+            this.splitContainer2.Panel2.Controls.Add(this.panel6);
             this.splitContainer2.Panel2.Controls.Add(this.label1);
             this.splitContainer2.Size = new System.Drawing.Size(1362, 48);
             this.splitContainer2.SplitterDistance = 564;
@@ -488,28 +496,38 @@
             this.comboBox2.TabIndex = 19;
             this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
             // 
+            // panel6
+            // 
+            this.panel6.Controls.Add(this.panel4);
+            this.panel6.Controls.Add(this.panel5);
+            this.panel6.Controls.Add(this.panel7);
+            this.panel6.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel6.Location = new System.Drawing.Point(462, 0);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(332, 48);
+            this.panel6.TabIndex = 8;
+            // 
             // panel4
             // 
             this.panel4.Controls.Add(this.checkBox5);
             this.panel4.Controls.Add(this.checkBox3);
             this.panel4.Controls.Add(this.checkBox4);
-            this.panel4.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel4.Location = new System.Drawing.Point(446, 0);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel4.Location = new System.Drawing.Point(91, 0);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(152, 48);
+            this.panel4.Size = new System.Drawing.Size(102, 48);
             this.panel4.TabIndex = 16;
             // 
             // checkBox5
             // 
             this.checkBox5.AutoSize = true;
-            this.checkBox5.Checked = true;
-            this.checkBox5.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox5.Location = new System.Drawing.Point(0, 16);
             this.checkBox5.Name = "checkBox5";
             this.checkBox5.Size = new System.Drawing.Size(96, 16);
             this.checkBox5.TabIndex = 16;
             this.checkBox5.Text = "5分钟fapYi次";
             this.checkBox5.UseVisualStyleBackColor = true;
+            this.checkBox5.CheckedChanged += new System.EventHandler(this.checkBox5_CheckedChanged);
             // 
             // checkBox3
             // 
@@ -517,10 +535,11 @@
             this.checkBox3.Dock = System.Windows.Forms.DockStyle.Top;
             this.checkBox3.Location = new System.Drawing.Point(0, 0);
             this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(152, 16);
+            this.checkBox3.Size = new System.Drawing.Size(102, 16);
             this.checkBox3.TabIndex = 14;
             this.checkBox3.Text = "无视时间限制";
             this.checkBox3.UseVisualStyleBackColor = true;
+            this.checkBox3.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
             // 
             // checkBox4
             // 
@@ -530,35 +549,67 @@
             this.checkBox4.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.checkBox4.Location = new System.Drawing.Point(0, 32);
             this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(152, 16);
+            this.checkBox4.Size = new System.Drawing.Size(102, 16);
             this.checkBox4.TabIndex = 15;
-            this.checkBox4.Text = "种子/磁链(打ti系种子)";
+            this.checkBox4.Text = "种子/磁链";
             this.checkBox4.UseVisualStyleBackColor = true;
+            this.checkBox4.CheckedChanged += new System.EventHandler(this.checkBox4_CheckedChanged);
+            // 
+            // panel5
+            // 
+            this.panel5.Controls.Add(this.button8);
+            this.panel5.Controls.Add(this.button7);
+            this.panel5.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel5.Location = new System.Drawing.Point(193, 0);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(139, 48);
+            this.panel5.TabIndex = 7;
+            // 
+            // button8
+            // 
+            this.button8.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button8.Location = new System.Drawing.Point(0, 25);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(139, 23);
+            this.button8.TabIndex = 13;
+            this.button8.Text = "过滤(一行,空格分割)";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
+            // button7
+            // 
+            this.button7.Dock = System.Windows.Forms.DockStyle.Top;
+            this.button7.Location = new System.Drawing.Point(0, 0);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(139, 25);
+            this.button7.TabIndex = 12;
+            this.button7.Text = "编辑字幕组";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // panel7
+            // 
+            this.panel7.Controls.Add(this.button9);
+            this.panel7.Controls.Add(this.comboBox4);
+            this.panel7.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panel7.Location = new System.Drawing.Point(0, 0);
+            this.panel7.Name = "panel7";
+            this.panel7.Size = new System.Drawing.Size(91, 48);
+            this.panel7.TabIndex = 7;
             // 
             // comboBox4
             // 
-            this.comboBox4.Dock = System.Windows.Forms.DockStyle.Right;
             this.comboBox4.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox4.FormattingEnabled = true;
             this.comboBox4.Items.AddRange(new object[] {
             "dmhy",
             "ktxp",
             "dmhy临时版"});
-            this.comboBox4.Location = new System.Drawing.Point(598, 0);
+            this.comboBox4.Location = new System.Drawing.Point(3, 3);
             this.comboBox4.Name = "comboBox4";
-            this.comboBox4.Size = new System.Drawing.Size(121, 20);
+            this.comboBox4.Size = new System.Drawing.Size(82, 20);
             this.comboBox4.TabIndex = 13;
-            // 
-            // button7
-            // 
-            this.button7.Dock = System.Windows.Forms.DockStyle.Right;
-            this.button7.Location = new System.Drawing.Point(719, 0);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(75, 48);
-            this.button7.TabIndex = 12;
-            this.button7.Text = "编辑字幕组";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
+            this.comboBox4.SelectedIndexChanged += new System.EventHandler(this.comboBox4_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -577,7 +628,18 @@
             this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
             this.notifyIcon1.Text = "notifyIcon1";
             this.notifyIcon1.Visible = true;
+            this.notifyIcon1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseClick);
             this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(3, 26);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(82, 21);
+            this.button9.TabIndex = 14;
+            this.button9.Text = "hey!";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
             // Form1
             // 
@@ -588,22 +650,27 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.ImeMode = System.Windows.Forms.ImeMode.Alpha;
             this.Name = "Form1";
-            this.Text = "F.A.P.I. ver.1.1.0";
+            this.Text = "F.A.P.I. ver.1.5.0";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Resize += new System.EventHandler(this.Form1_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
+            this.panel6.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
+            this.panel5.ResumeLayout(false);
+            this.panel7.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -655,6 +722,11 @@
         private System.Windows.Forms.CheckBox checkBox4;
         private System.Windows.Forms.NotifyIcon notifyIcon1;
         private System.Windows.Forms.CheckBox checkBox5;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Panel panel6;
+        private System.Windows.Forms.Panel panel7;
+        private System.Windows.Forms.Button button9;
     }
 }
 

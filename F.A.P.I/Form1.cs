@@ -19,6 +19,9 @@ using Newtonsoft.Json;
 using System.Collections.Specialized;
 using System.Net.NetworkInformation;
 using System.Timers;
+using MyProg;
+using Seringa.Engine.Implementations.Proxy;
+using Seringa.Engine.Enums;
 
 namespace F.A.P.I
 {
@@ -43,9 +46,12 @@ namespace F.A.P.I
         public static string appdataFAPI = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\F.A.P.I.";
         public static string archive = Path.Combine(appdataFAPI, "archive.json");
         public static string fansubtxt = Path.Combine(appdataFAPI, "fansub.txt");
+        public static string filterListtxt = Path.Combine(appdataFAPI, "filterList.txt");
         public static string downloadsofttxt = Path.Combine(appdataFAPI, "downloadsoft.txt");
-
+        public static string configInI = Path.Combine(appdataFAPI, "config.ini");
+        public static IniFile MyIni = new IniFile(configInI);
         public static ArrayList lad; /* 临时dmhy 预先加载10页 */
+        public static ProxyDetails ProxyDetails = new ProxyDetails();
 
         public ContextMenu contextMenu1 = new ContextMenu();
 
@@ -74,8 +80,8 @@ namespace F.A.P.I
                  *    MessageBox.Show(@"喵又香了");
                  * }
                  */
-                string[] bababab = "GB MP4 720p 1080p 576p 720P 1080P 576P 新番 BIG5 1月 2月 3月 4月 5月 6月 7月 8月 9月 10月 11月 12月 第 话 讨论 一月 二月 三月 四月 五月 六月 七月 八月 九月 十月 十一月 十二月".Split(' ');
-                filterList = bababab.ToList();
+                //string[] bababab = "预告 預告 pv GB MP4 720p 1080p 576p 720P 1080P 576P 新番 BIG5 1月 2月 3月 4月 5月 6月 7月 8月 9月 10月 11月 12月 第 话 讨论 一月 二月 三月 四月 五月 六月 七月 八月 九月 十月 十一月 十二月".Split(' ');
+                //filterList = bababab.ToList();
 
                 AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
                 {
@@ -96,14 +102,15 @@ namespace F.A.P.I
                 {
                     Directory.CreateDirectory(@appdataFAPI);      /* 创建文件夹 */
                 }
-                comboBox4.SelectedIndex = 0;
+                //comboBox4.SelectedIndex = 0;
                 label1.Text = @"
 ＿人人人人人人人人人人人人人人人人人人人人＿
 ＞　　ひどい！ゆっくりできないひとはキライだよ！！　＜
 ￣^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^￣
 ";
-
+                loadconfig();
                 loadfansub();
+                loadfilterList();
                 readArchiveJson();
                 readJson(month);
                 initcombobox();
@@ -123,7 +130,7 @@ namespace F.A.P.I
                 this.notifyIcon1.ContextMenu = contextMenu1;
 
 
-                downloadsoftpath = readdownloadsoftpath();
+                downloadsoftpath = MyIni.Read("downloadSoftPath");
                 if (downloadsoftpath != null && downloadsoftpath != "")
                     Process.Start(@downloadsoftpath);
 
@@ -137,6 +144,159 @@ namespace F.A.P.I
             {
                 MessageBox.Show(ex.ToString());
             }
+        }
+
+        private void setconfig()
+        {
+            if (initflag)
+            {
+                if (checkBox1.CheckState == CheckState.Checked)
+                {
+                    MyIni.Write("Order", "1");
+                }
+                else
+                {
+                    MyIni.Write("Order", "0");
+                }
+                if (checkBox3.CheckState == CheckState.Checked)
+                {
+                    MyIni.Write("Nolimit", "1");
+                }
+                else
+                {
+                    MyIni.Write("Nolimit", "0");
+                }
+                if (checkBox5.CheckState == CheckState.Checked)
+                {
+                    MyIni.Write("autoF", "1");
+                }
+                else
+                {
+                    MyIni.Write("autoF", "0");
+                }
+                if (checkBox4.CheckState == CheckState.Checked)
+                {
+                    MyIni.Write("linkType", "1");
+                }
+                else
+                {
+                    MyIni.Write("linkType", "0");
+                }
+                MyIni.Write("Ffrom", comboBox4.SelectedIndex + "");
+                //MyIni.Write("autoTime", "300");
+                //MyIni.Write("downloadSoftPath", "");
+                //MyIni.Write("ProxyType", "ProxyType.Socks");
+                //MyIni.Write("ProxyAddress", "127.0.0.1");
+                //MyIni.Write("ProxyPort", "1081");
+                //MyIni.Write("FullProxyAddress", "127.0.0.1:1081");
+            }
+        }
+
+        private void loadconfig()
+        {
+            if (System.IO.File.Exists(configInI))
+            {
+                loadconfig_1();
+            }
+            else
+            {
+                /* 第一行空格 */
+                string fansubtmp = "";
+                System.IO.File.WriteAllText(configInI, fansubtmp);
+                MyIni.Write("Order", "0");
+                MyIni.Write("Nolimit", "0");
+                MyIni.Write("autoF", "0");
+                MyIni.Write("autoTime", "300");
+                MyIni.Write("linkType", "0");
+                MyIni.Write("downloadSoftPath", "");
+                MyIni.Write("Ffrom", "0");
+                //Proxy http  Socks socks4,5 None 没代理
+                MyIni.Write("ProxyType", "None");
+                MyIni.Write("ProxyAddress", "127.0.0.1");
+                MyIni.Write("ProxyPort", "1080");
+                MyIni.Write("FullProxyAddress", "127.0.0.1:1080");
+                MyIni.Write("ProxyUserName", "ProxyUserName");
+                MyIni.Write("ProxyPassword", "ProxyPassword");
+
+                loadconfig_1();
+            }
+        }
+
+        private void loadconfig_1()
+        {
+            if (MyIni.Read("Order") == "1")
+            {
+                checkBox1.Checked = true;
+            }
+            else if (MyIni.Read("Order") == "0")
+            {
+                checkBox1.Checked = false;
+            }
+            if (MyIni.Read("Nolimit") == "1")
+            {
+                checkBox3.Checked = true;
+            }
+            else if (MyIni.Read("Nolimit") == "0")
+            {
+                checkBox3.Checked = false;
+            }
+            if (MyIni.Read("autoF") == "1")
+            {
+                checkBox5.Checked = true;
+            }
+            else if (MyIni.Read("autoF") == "0")
+            {
+                checkBox5.Checked = false;
+            }
+            if (MyIni.Read("linkType") == "1")
+            {
+                checkBox4.Checked = true;
+            }
+            else if (MyIni.Read("linkType") == "0")
+            {
+                checkBox4.Checked = false;
+            }
+            comboBox4.SelectedIndex = Int32.Parse(MyIni.Read("Ffrom"));
+
+            ProxyDetails.ProxyType = (ProxyType)System.Enum.Parse(typeof(ProxyType), MyIni.Read("ProxyType"));
+            ProxyDetails.ProxyAddress = MyIni.Read("ProxyAddress");
+            ProxyDetails.ProxyPort = Int32.Parse(MyIni.Read("ProxyPort"));
+            ProxyDetails.FullProxyAddress = MyIni.Read("FullProxyAddress");
+
+            ProxyDetails.ProxyUserName = MyIni.Read("ProxyUserName");
+            ProxyDetails.ProxyPassword = MyIni.Read("ProxyPassword");
+        }
+
+        private void loadfilterList()
+        {
+ 
+            if (System.IO.File.Exists(@filterListtxt))
+            {
+                string[] bababab = readfilterList().Split(' '); ;
+                filterList = bababab.ToList();
+            }
+            else
+            {
+                /* 第一行空格 */
+                string fansubtmp = @"预告 預告 pv GB MP4 720p 1080p 576p 720P 1080P 576P 新番 BIG5 1月 2月 3月 4月 5月 6月 7月 8月 9月 10月 11月 12月 第 话 讨论 一月 二月 三月 四月 五月 六月 七月 八月 九月 十月 十一月 十二月";
+                System.IO.File.WriteAllText(@filterListtxt, fansubtmp);
+                string[] bababab = readfilterList().Split(' '); ;
+                filterList = bababab.ToList();
+            }
+        }
+
+        private String readfilterList()
+        {
+
+            StreamReader sr = new StreamReader(@filterListtxt, Encoding.GetEncoding("UTF-8"));
+            String line;
+            StringBuilder sb = new StringBuilder();
+            //while ((line = sr.ReadLine()) != null)
+            //{
+
+            //}
+            return (sr.ReadLine());
+     
         }
 
 
@@ -653,6 +813,24 @@ KPDM
             bool local = System.IO.File.Exists(archive);
             try
             {
+                if (local)
+                {
+                    readLocalArchiveJson();
+                    var maxMonth = Int32.Parse(archiveList.OrderByDescending(item => item.year).First().months.OrderByDescending(item => item.month).First().month);
+                    var maxYear = Int32.Parse(archiveList.OrderByDescending(item => item.year).First().year);
+                    if (year > maxYear)
+                    {
+                        local = false;
+                    }
+                    else
+                    {
+                        if (maxMonth + 3 <= month)
+                        {
+                            local = false;
+                        }
+                    }
+                }
+
                 if (local)
                 {
                     readLocalArchiveJson();
@@ -1241,6 +1419,7 @@ KPDM
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             comboBox1comboBox2_SelectedIndexChanged();
+            setconfig();
         }
 
 
@@ -1299,8 +1478,10 @@ KPDM
             if (FD.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 fileToOpen = FD.FileName;
-                System.IO.File.WriteAllText(downloadsofttxt, fileToOpen);
-                downloadsoftpath = readdownloadsoftpath();
+                MyIni.Write("downloadSoftPath", fileToOpen);
+                downloadsoftpath = MyIni.Read("downloadSoftPath");
+                //System.IO.File.WriteAllText(downloadsofttxt, fileToOpen);
+                //downloadsoftpath = readdownloadsoftpath();
             }
         }
 
@@ -1398,7 +1579,7 @@ KPDM
         private void button6_Click(object sender, EventArgs e)
         {
             Form3 f3 = new Form3(comboBox1, comboBox3, comboBox2, this);
-            f3.Show();
+            f3.ShowDialog();
         }
 
 
@@ -1634,13 +1815,7 @@ KPDM
 
         private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if (this.WindowState == FormWindowState.Minimized)
-            {
-                this.Visible = true;
-                this.ShowInTaskbar = true;                         /* 显示在系统任务栏 */
-                this.WindowState = FormWindowState.Normal;       /* 还原窗体 */
-                /* this.notifyIcon1.Visible = false;  //托盘图标隐藏 */
-            }
+
         }
 
 
@@ -1651,6 +1826,52 @@ KPDM
                 this.WindowState = FormWindowState.Minimized;
                 this.Visible = false;
                 this.notifyIcon1.Visible = true;
+            }
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            Process.Start(filterListtxt);
+        }
+
+        private void comboBox4_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            setconfig();
+        }
+
+        private void checkBox3_CheckedChanged(object sender, EventArgs e)
+        {
+            setconfig();
+        }
+
+        private void checkBox5_CheckedChanged(object sender, EventArgs e)
+        {
+            setconfig();
+        }
+
+        private void checkBox4_CheckedChanged(object sender, EventArgs e)
+        {
+            setconfig();
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            proxyDialog a = new proxyDialog();
+            a.ShowDialog();   
+        }
+
+        private void notifyIcon1_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Visible = true;
+                this.ShowInTaskbar = true;                         /* 显示在系统任务栏 */
+                this.WindowState = FormWindowState.Normal;       /* 还原窗体 */
+                /* this.notifyIcon1.Visible = false;  //托盘图标隐藏 */
+            }
+            else
+            {
+                this.WindowState = FormWindowState.Minimized;
             }
         }
     }

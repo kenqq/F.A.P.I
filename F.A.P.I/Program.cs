@@ -20,12 +20,5 @@ namespace F.A.P.I
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
         }
-
-
-        
-         
-
-
-
     }
 }

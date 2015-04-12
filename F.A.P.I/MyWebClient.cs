@@ -1,14 +1,22 @@
-﻿using System;
+﻿using Seringa.Engine.Enums;
+using Seringa.Engine.Interfaces;
+using Seringa.Engine.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
+using Seringa.Engine.Implementations.Proxy;
 
 namespace F.A.P.I
 {
     class MyWebClient : WebClient
     {
+        public IProxyDetails ProxyDetails { get; set; }
+        public string UserAgent { get; set; }
+
+
         //time in milliseconds
         private int timeout;
         public int Timeout
@@ -33,15 +41,62 @@ namespace F.A.P.I
             this.timeout = timeout;
         }
 
- 
-
         protected override WebRequest GetWebRequest(Uri address)
         {
-            HttpWebRequest request = (HttpWebRequest)base.GetWebRequest(address);
-            request.Timeout = this.timeout;
-            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-            return request;
+            WebRequest result = null;
+            ProxyDetails = Form1.ProxyDetails;
+            //ProxyDetails.ProxyType = ProxyType.Socks;
+            //ProxyDetails.ProxyAddress = "127.0.0.1";
+            //ProxyDetails.ProxyPort = 1081;
+            //ProxyDetails.FullProxyAddress = "127.0.0.1:1081";
+
+            if (ProxyDetails != null)
+            {
+                if (ProxyDetails.ProxyType == ProxyType.Proxy)
+                {
+                    result = (HttpWebRequest)WebRequest.Create(address);
+                    result.Proxy = new WebProxy(ProxyDetails.FullProxyAddress);
+                    result.Timeout = this.timeout;
+                    ((HttpWebRequest)result).AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+                    if (!string.IsNullOrEmpty(UserAgent))
+                        ((HttpWebRequest)result).UserAgent = UserAgent;
+                }
+                else if (ProxyDetails.ProxyType == ProxyType.Socks)
+                {
+                    result = SocksHttpWebRequest.Create(address);
+                    result.Proxy = new WebProxy(ProxyDetails.FullProxyAddress);
+                    //((HttpWebRequest)result).AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+                    //TODO: implement user and password
+
+                }
+                else if (ProxyDetails.ProxyType == ProxyType.None)
+                {
+                    result = (HttpWebRequest)WebRequest.Create(address);
+                    result.Timeout = this.timeout;
+                    ((HttpWebRequest)result).AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+                    if (!string.IsNullOrEmpty(UserAgent))
+                        ((HttpWebRequest)result).UserAgent = UserAgent;
+                }
+            }
+            else
+            {
+                result = (HttpWebRequest)WebRequest.Create(address);
+                result.Timeout = this.timeout;
+                ((HttpWebRequest)result).AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+                if (!string.IsNullOrEmpty(UserAgent))
+                    ((HttpWebRequest)result).UserAgent = UserAgent;
+            }
+            
+            return result;
         }
+
+        //protected override WebRequest GetWebRequest(Uri address)
+        //{
+        //    HttpWebRequest request = (HttpWebRequest)base.GetWebRequest(address);
+        //    request.Timeout = this.timeout;
+        //    request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+        //    return request;
+        //}
         public virtual byte[] DownloadData(string address) 
         {
             int tryCount = 0;

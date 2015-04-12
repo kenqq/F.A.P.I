@@ -28,3 +28,5 @@ D:\Programming\c#\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.Form2.resources
 D:\Programming\c#\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.Form3.resources
 D:\Programming\c#\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.Properties.Resources.resources
 D:\Programming\c#\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.csproj.GenerateResource.Cache
+D:\Programming\c#\F.A.P.I\F.A.P.I\bin\Debug\F.A.P.I.exe.config
+D:\Programming\c#\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.proxyDialog.resources
