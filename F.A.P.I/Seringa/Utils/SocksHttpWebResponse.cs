@@ -81,9 +81,15 @@ namespace Seringa.Engine.Utils
             var headers = responseMessage.Substring(0, indexOfFirstBlankLine);
             var headerValues = headers.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
             // ignore the first line in the header since it is the HTTP response code
+
+            var headerEntry1 = headerValues[0].Split(new[] { ' ' }, 2);
+            Headers.Add("Status", headerEntry1[1]);
+
             for (int i = 1; i < headerValues.Length; i++)
             {
-                var headerEntry = headerValues[i].Split(new[] { ':' });
+                //var headerEntry = headerValues[i].Split(new[] { ':' });
+                //Headers.Add(headerEntry[0], headerEntry[1]);
+                var headerEntry = headerValues[i].Split(new[] { ':' },2);
                 Headers.Add(headerEntry[0], headerEntry[1]);
             }
 

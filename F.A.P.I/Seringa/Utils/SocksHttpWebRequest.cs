@@ -19,7 +19,7 @@ namespace Seringa.Engine.Utils
 
         #region Member Variables
 
-        private readonly Uri _requestUri;
+        private Uri _requestUri;//readonly
         private WebHeaderCollection _requestHeaders;
         private string _method;
         private SocksHttpWebResponse _response;
@@ -235,7 +235,17 @@ namespace Seringa.Engine.Utils
                     bytesReceived = _socksConnection.Receive(buffer);
                 }
             }
-            return new SocksHttpWebResponse(response.ToString(),_correctEncoding);
+            SocksHttpWebResponse shwr= new SocksHttpWebResponse(response.ToString(),_correctEncoding);
+            string httpstatuscode= shwr.Headers.Get("status");
+            string Location= shwr.Headers.Get("Location");
+            if (httpstatuscode.IndexOf("303")>-1)
+            {
+                _requestUri = new Uri( Location);
+                RequestMessage = null;
+                _requestMessage = null;
+                shwr = InternalGetResponse();
+            }
+            return shwr;
         }
 
         private static IPAddress GetProxyIpAddress(Uri proxyUri)
@@ -277,6 +287,10 @@ namespace Seringa.Engine.Utils
                     _requestMessage = BuildHttpRequestMessage();
                 }
                 return _requestMessage;
+            }
+            set
+            {
+                _requestMessage = value;
             }
         }
 

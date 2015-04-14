@@ -1112,16 +1112,19 @@ KPDM
                             if (comboBox4.SelectedItem.ToString().IndexOf("ktxp") > -1)
                             {
                                 keyword = jc.searchKeyword + " " + jc.episode + " " + jc.fansub + filterEpisode;
+                                keyword = keyword.Replace("\u3000"," ");
                                 keyword = getTorrentFromKtxp(keyword, bb, jc);
                             }
                             else if (comboBox4.SelectedItem.ToString().IndexOf("dmhy") > -1)
                             {
                                 keyword = jc.searchKeyword + " " + jc.episode + " " + jc.fansub;
+                                keyword = keyword.Replace("\u3000", " ");
                                 keyword = getTorrentFromDmhy(keyword, bb, jc);
                             }
                             else if (comboBox4.SelectedItem.ToString().IndexOf("nya") > -1)
                             {
                                 keyword = jc.searchKeyword + " " + jc.episode + " " + jc.fansub + filterEpisode;
+                                keyword = keyword.Replace("\u3000", " ");
                                 keyword = getTorrentFromNyaa(keyword, bb);
                             }
                             else if (comboBox4.SelectedItem.ToString().IndexOf("临时版") > -1)
