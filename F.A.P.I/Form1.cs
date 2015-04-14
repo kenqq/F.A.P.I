@@ -616,45 +616,51 @@ KPDM
                 IFormatProvider culture = new CultureInfo("en-US", true);
                 /*下载网页源代码 */
                 MyWebClient webClient = new MyWebClient();
-                string ktxp = "http://www.nyaa.se/";
                 string url = "http://www.nyaa.se/?page=search&term=" + keywordURL
                                   + "&cats=1_0&minage=0&maxage=14";
                 string htmlString = Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(url));
-
                 Document doc = NSoup.NSoupClient.Parse(htmlString);
-                /* --------------------- */
-                int countmax = 0;
-                int trCount = doc.Select("table.tlist").First().Select("tr").Count; /* 找不到结果会是2 */
-                for (var i = 1; i < trCount; ++i)
+                if (htmlString.IndexOf("tlist") > -1)
                 {
-                    if (trCount == 2)
+                    /* --------------------- */
+                    int countmax = 0;
+                    int trCount = doc.Select("table.tlist").First().Select("tr").Count; /* 找不到结果会是2 */
+                    for (var i = 1; i < trCount; ++i)
                     {
-                        Element isnulldoc = doc.Select("table.tlist").First().Select("tr:eq(" + i + ")").First().Select("td").First().Select("b").First();
-                        if (isnulldoc.Text() == "No torrents found.")
-                            return ("nothing");
+                        if (trCount == 2)
+                        {
+                            Element isnulldoc = doc.Select("table.tlist").First().Select("tr:eq(" + i + ")").First().Select("td").First().Select("b").First();
+                            if (isnulldoc.Text() == "No torrents found.")
+                                return ("nothing");
+                        }
+                        if (!longepisode) /* 如果是长期连载的 无视开播时间 */
+                        {
+                        }
+                        Element countt = doc.Select("table.tlist").First().Select("tr:eq(" + i + ")").First().Select("td:eq(6)").First();
+                        int count = 0;
+                        try
+                        {
+                            count = Int32.Parse(countt.Text());
+                        }
+                        catch (Exception e)
+                        {
+                            count = 0;
+                        }
+                        if (count >= countmax)
+                        {
+                            Element torrent = doc.Select("table.tlist").First().Select("tr:eq(" + i + ")").First()
+                                      .Select("td[class=tlistdownload]").First().Select("a").First(); /* 种子地址 */
+                            countmax = count;
+                            str_url = torrent.Attr("href");
+                        }
                     }
-                    if (!longepisode) /* 如果是长期连载的 无视开播时间 */
-                    {
-                    }
-                    Element countt = doc.Select("table.tlist").First().Select("tr:eq(" + i + ")").First().Select("td:eq(6)").First();
-                    int count = 0;
-                    try
-                    {
-                        count = Int32.Parse(countt.Text());
-                    }
-                    catch (Exception e)
-                    {
-                        count = 0;
-                    }
-                    if (count >= countmax)
-                    {
-                        Element torrent = doc.Select("table.tlist").First().Select("tr:eq(" + i + ")").First()
-                                  .Select("td[class=tlistdownload]").First().Select("a").First(); /* 种子地址 */
-                        countmax = count;
-                        str_url = torrent.Attr("href");
-                    }
+                    /* /---------- */
                 }
-                /* /---------- */
+                else
+                {
+                    Element asd = doc.Select("div[class=viewdownloadbutton]").First();
+                    str_url = doc.Select("div[class=viewdownloadbutton] a[rel=nofollow]").First().Attr("href"); /* 找不到结果会是2 */
+                }
             }
             catch (System.Net.WebException e)
             {

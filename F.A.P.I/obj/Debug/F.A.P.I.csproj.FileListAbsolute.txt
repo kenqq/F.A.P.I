@@ -30,3 +30,15 @@ D:\Programming\c#\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.Properties.Resources.resourc
 D:\Programming\c#\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.csproj.GenerateResource.Cache
 D:\Programming\c#\F.A.P.I\F.A.P.I\bin\Debug\F.A.P.I.exe.config
 D:\Programming\c#\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.proxyDialog.resources
+E:\ljx\F.A.P.I\F.A.P.I\bin\Debug\F.A.P.I.exe.config
+E:\ljx\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.exe
+E:\ljx\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.pdb
+E:\ljx\F.A.P.I\F.A.P.I\bin\Debug\F.A.P.I.exe
+E:\ljx\F.A.P.I\F.A.P.I\bin\Debug\F.A.P.I.pdb
+E:\ljx\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.csprojResolveAssemblyReference.cache
+E:\ljx\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.Form1.resources
+E:\ljx\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.Form2.resources
+E:\ljx\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.Form3.resources
+E:\ljx\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.Properties.Resources.resources
+E:\ljx\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.proxyDialog.resources
+E:\ljx\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.csproj.GenerateResource.Cache

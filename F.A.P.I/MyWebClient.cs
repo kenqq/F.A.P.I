@@ -54,17 +54,21 @@ namespace F.A.P.I
             {
                 if (ProxyDetails.ProxyType == ProxyType.Proxy)
                 {
-                    result = (HttpWebRequest)WebRequest.Create(address);
-                    result.Proxy = new WebProxy(ProxyDetails.FullProxyAddress);
-                    result.Timeout = this.timeout;
-                    ((HttpWebRequest)result).AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+                    result = WebRequest.Create(address);
+                    HttpWebRequest request = (HttpWebRequest)result;
+                    request.Proxy = new WebProxy(ProxyDetails.FullProxyAddress);
+                    request.Timeout = this.timeout;
+                    request.AllowAutoRedirect = true;  //这里不允许再继续跳转.否则取不到了
+                    request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
                     if (!string.IsNullOrEmpty(UserAgent))
-                        ((HttpWebRequest)result).UserAgent = UserAgent;
+                        request.UserAgent = UserAgent;
                 }
                 else if (ProxyDetails.ProxyType == ProxyType.Socks)
                 {
                     result = SocksHttpWebRequest.Create(address);
-                    result.Proxy = new WebProxy(ProxyDetails.FullProxyAddress);
+                    SocksHttpWebRequest request = (SocksHttpWebRequest)result;
+                    request.Proxy = new WebProxy(ProxyDetails.FullProxyAddress);
+                    //request.AllowAutoRedirect = true;  //这里不允许再继续跳转.否则取不到了
                     //((HttpWebRequest)result).AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
                     //TODO: implement user and password
 
@@ -72,10 +76,12 @@ namespace F.A.P.I
                 else if (ProxyDetails.ProxyType == ProxyType.None)
                 {
                     result = (HttpWebRequest)WebRequest.Create(address);
-                    result.Timeout = this.timeout;
-                    ((HttpWebRequest)result).AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+                    HttpWebRequest request = (HttpWebRequest)result;
+                    request.Timeout = this.timeout;
+                    request.AllowAutoRedirect = true;  //这里不允许再继续跳转.否则取不到了
+                    request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
                     if (!string.IsNullOrEmpty(UserAgent))
-                        ((HttpWebRequest)result).UserAgent = UserAgent;
+                        request.UserAgent = UserAgent;
                 }
             }
             else
@@ -86,7 +92,7 @@ namespace F.A.P.I
                 if (!string.IsNullOrEmpty(UserAgent))
                     ((HttpWebRequest)result).UserAgent = UserAgent;
             }
-            
+
             return result;
         }
 
@@ -97,22 +103,22 @@ namespace F.A.P.I
         //    request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
         //    return request;
         //}
-        public virtual byte[] DownloadData(string address) 
+        public virtual byte[] DownloadData(string address)
         {
             int tryCount = 0;
-            byte[] result=null;
+            byte[] result = null;
             while (true)
             {
                 try
                 {
                     if (3 < tryCount)
                     {
-                        throw new MyWebClientException("地址:" + address +" 连接失败!请检测网络!");
+                        throw new MyWebClientException("地址:" + address + " 连接失败!请检测网络!");
                     }
-                      result = base.DownloadData(address);
-                      break;
-                }   
-                catch (System.Net.WebException  e)
+                    result = base.DownloadData(address);
+                    break;
+                }
+                catch (System.Net.WebException e)
                 {
                     tryCount++;
                     //线程休眼10秒后在试
@@ -125,7 +131,7 @@ namespace F.A.P.I
                     Thread.Sleep(100);
                 }
 
-                
+
             }
             return result;
         }
