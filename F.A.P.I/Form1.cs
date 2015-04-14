@@ -41,7 +41,8 @@ namespace F.A.P.I
         public bool handling = false;
         public List<string> kwList = new List<string>();
 
-        public List<string> filterList = new List<string>();
+        public List<string> filterList = new List<string>();//运行时去除结果    (单纯程序去除结果中的多余词
+        public List<string> filterList2 = new List<string>();//运行时"排除"结果   (sql not 运算
 
         public static string appdataFAPI = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\F.A.P.I.";
         public static string archive = Path.Combine(appdataFAPI, "archive.json");
@@ -111,10 +112,11 @@ namespace F.A.P.I
                 loadconfig();
                 loadfansub();
                 loadfilterList();
+                loadfilterList2();
                 readArchiveJson();
                 readJson(month);
                 initcombobox();
-                initflag = true;
+                
                 comboBox1comboBox2_SelectedIndexChanged();
 
 
@@ -139,6 +141,14 @@ namespace F.A.P.I
                 aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
                 aTimer.Interval = 1000*60*5;
                 aTimer.Enabled = true;
+
+                initflag = true;
+
+                if (MyIni.Read("Order") == "1")
+                {
+                    checkBox1.Checked = !checkBox1.Checked;
+                    checkBox1.Checked = !checkBox1.Checked;
+                }
             }
             catch (Exception ex)
             {
@@ -278,27 +288,54 @@ namespace F.A.P.I
             else
             {
                 /* 第一行空格 */
-                string fansubtmp = @"预告 預告 pv GB MP4 720p 1080p 576p 720P 1080P 576P 新番 BIG5 1月 2月 3月 4月 5月 6月 7月 8月 9月 10月 11月 12月 第 话 讨论 一月 二月 三月 四月 五月 六月 七月 八月 九月 十月 十一月 十二月";
+                string fansubtmp = @"GB MP4 720p 1080p 576p 720P 1080P 576P 新番 BIG5 1月 2月 3月 4月 5月 6月 7月 8月 9月 10月 11月 12月 第 话 讨论 一月 二月 三月 四月 五月 六月 七月 八月 九月 十月 十一月 十二月
+预告 預告 pv ";
                 System.IO.File.WriteAllText(@filterListtxt, fansubtmp);
                 string[] bababab = readfilterList().Split(' '); ;
                 filterList = bababab.ToList();
             }
+            for (int i = filterList.Count - 1; i>-1;--i )
+            {
+                if (filterList[i].Length < 1)
+                    filterList.Remove(filterList[i]);
+            }
         }
-
-        private String readfilterList()
+        private void loadfilterList2()
         {
 
-            StreamReader sr = new StreamReader(@filterListtxt, Encoding.GetEncoding("UTF-8"));
-            String line;
-            StringBuilder sb = new StringBuilder();
-            //while ((line = sr.ReadLine()) != null)
-            //{
-
-            //}
-            return (sr.ReadLine());
-     
+            if (System.IO.File.Exists(@filterListtxt))
+            {
+                string[] bababab = readfilterList2().Split(' '); ;
+                filterList2 = bababab.ToList();
+            }
+            else
+            {
+                /* 第一行空格 */
+                string fansubtmp = @"GB MP4 720p 1080p 576p 720P 1080P 576P 新番 BIG5 1月 2月 3月 4月 5月 6月 7月 8月 9月 10月 11月 12月 第 话 讨论 一月 二月 三月 四月 五月 六月 七月 八月 九月 十月 十一月 十二月
+预告 預告 pv ";
+                System.IO.File.WriteAllText(@filterListtxt, fansubtmp);
+                string[] bababab = readfilterList2().Split(' '); ;
+                filterList2 = bababab.ToList();
+            }
+            for (int i = filterList2.Count - 1; i > -1; --i)
+            {
+                if (filterList2[i].Length < 1)
+                    filterList2.Remove(filterList2[i]);
+            }
         }
-
+        private String readfilterList()
+        {
+            StreamReader sr = new StreamReader(@filterListtxt, Encoding.GetEncoding("UTF-8"));
+            StringBuilder sb = new StringBuilder();
+            return (sr.ReadLine());
+        }
+        private String readfilterList2()
+        {
+            StreamReader sr = new StreamReader(@filterListtxt, Encoding.GetEncoding("UTF-8"));
+            StringBuilder sb = new StringBuilder();
+            sr.ReadLine();
+            return (sr.ReadLine());
+        }
 
         void item_Click2(object sender, EventArgs e)
         {
@@ -547,7 +584,13 @@ KPDM
             {
                 filterflag = true;
             }
-
+            foreach (string s in filterList2)
+            {
+                if (asd.IndexOf(s) > -1)
+                {
+                    filterflag = true;
+                }
+            }
             /* } */
             return (filterflag);
         }
@@ -1210,9 +1253,7 @@ KPDM
 
             handling = false;
             writeLocalJson(jsonList, jsonName);
-            this.Visible = true;
-            this.ShowInTaskbar = true;                         /* 显示在系统任务栏 */
-            this.WindowState = FormWindowState.Normal;       /* 还原窗体 */
+            changWindowsSize();
             if (handllist.Count == 1)
             {
                 if (checkBox5.CheckState != CheckState.Checked)
@@ -1367,7 +1408,7 @@ KPDM
 
         private void button1_Click(object sender, System.EventArgs e)
         {
-            this.WindowState = FormWindowState.Minimized;
+            changWindowsSize();
             Thread demoThread = new Thread(new ParameterizedThreadStart(threadMethod));
             demoThread.IsBackground = true;
             demoThread.Start("处理中");      /* 启动线程 */
@@ -1824,12 +1865,7 @@ KPDM
 
         private void Form1_Resize(object sender, EventArgs e)
         {
-            if (this.WindowState == FormWindowState.Minimized)
-            {
-                this.WindowState = FormWindowState.Minimized;
-                this.Visible = false;
-                this.notifyIcon1.Visible = true;
-            }
+
         }
 
         private void button8_Click(object sender, EventArgs e)
@@ -1865,6 +1901,11 @@ KPDM
 
         private void notifyIcon1_MouseClick(object sender, MouseEventArgs e)
         {
+            changWindowsSize();
+        }
+
+        private void changWindowsSize()
+        {
             if (this.WindowState == FormWindowState.Minimized)
             {
                 this.Visible = true;
@@ -1875,7 +1916,18 @@ KPDM
             else
             {
                 this.WindowState = FormWindowState.Minimized;
+                this.ShowInTaskbar = false; 
             }
+        } 
+
+        private void Form1_SizeChanged(object sender, EventArgs e)
+        {
+            if (initflag)
+                if (this.WindowState == FormWindowState.Minimized)
+                {
+                    this.Hide();
+                    this.notifyIcon1.Visible = true;
+                } 
         }
     }
 }
