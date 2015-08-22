@@ -104,7 +104,7 @@ namespace F.A.P.I
             {
                 foreach (JsonClass jc2 in j2)
                 {
-                    if (jc2.titleCN == jc1.titleCN && jc1.isOrderRabbit == "1")
+                    if (jc2.titleCN == jc1.titleCN)//&& jc1.isOrderRabbit == "1"
                     {
                         jc2.isOrderRabbit = jc1.isOrderRabbit;
                         jc2.longepisode = jc1.longepisode;
@@ -128,7 +128,7 @@ namespace F.A.P.I
 
 
         public string jsonName = "";
-        public static string appdataFAPI = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\F.A.P.I.";
+        public static string appdataFAPI = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\F.A.P.I.2";
         public static string archive = Path.Combine(appdataFAPI, "archive.json");
         public static string fansubtxt = Path.Combine(appdataFAPI, "fansub.txt");
         public static string downloadsofttxt = Path.Combine(appdataFAPI, "downloadsoft.txt");
@@ -179,11 +179,39 @@ namespace F.A.P.I
                 System.IO.File.WriteAllText(archive, jsonText);
             }
              * */
+            /*
             MyWebClient webClient = new MyWebClient();
             string url = "http://bgmlist.com/json/archive.json";
             byte[] b = webClient.DownloadData(url);
             string jsonText = Encoding.UTF8.GetString(b, 0, b.Length);
             archiveList = JsonConvert.DeserializeObject<List<archive>>(jsonText);
+            System.IO.File.WriteAllText(archive, jsonText);
+             * */
+
+            MyWebClient webClient = new MyWebClient();
+            string url = "http://bgmlist.com/json/archive.json";
+            archiveList = new List<I.archive>();
+            byte[] b = webClient.DownloadData(url);
+            string jsonText = Encoding.UTF8.GetString(b, 0, b.Length);
+            Newtonsoft.Json.Linq.JObject aaaa = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(jsonText);
+            Newtonsoft.Json.Linq.JObject bb = (Newtonsoft.Json.Linq.JObject)aaaa.GetValue("data");
+            foreach (var item in bb)
+            {
+                archive asd = new archive();
+                asd.year = item.Key;
+                asd.months = new List<months>();
+                Newtonsoft.Json.Linq.JObject cc = (Newtonsoft.Json.Linq.JObject)item.Value;
+                foreach (var item1 in cc)
+                {
+                    months m = new months();
+                    m.month = item1.Key;
+                    m.json = ((Newtonsoft.Json.Linq.JObject)item1.Value).GetValue("path").ToString();
+                    asd.months.Add(m);
+                }
+                archiveList.Add(asd);
+            }
+            jsonText = JsonConvert.SerializeObject(archiveList);
+            //archiveList = JsonConvert.DeserializeObject<List<archive>>(jsonText);
             System.IO.File.WriteAllText(archive, jsonText);
         }
 

@@ -14,7 +14,7 @@ namespace F.A.P.I
 {
     public partial class proxyDialog : Form
     {
-        public static string appdataFAPI = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\F.A.P.I.";
+        public static string appdataFAPI = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\F.A.P.I.2";
         public static string configInI = Path.Combine(appdataFAPI, "config.ini");
         public static IniFile MyIni = new IniFile(configInI);
 
