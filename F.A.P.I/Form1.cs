@@ -30,6 +30,7 @@ namespace F.A.P.I
         public List<JsonClass> jsonList;
         public List<archive> archiveList;
         public string bgmlist = "http://bgmlist.com/";
+        public static string dmhyBgmListUrl = "https://share.dmhy.org/cms/page/name/programme.html";
         public int day = (int)DateTime.Now.DayOfWeek;
         public int month = (int)DateTime.Now.Month;
         public int year = (int)DateTime.Now.Year;
@@ -55,7 +56,6 @@ namespace F.A.P.I
         public static ProxyDetails ProxyDetails = new ProxyDetails();
 
         public ContextMenu contextMenu1 = new ContextMenu();
-
 
         public Form1()
         {
@@ -999,6 +999,7 @@ KPDM
                         a.Add("longepisode", "0");                                            /* 长期连载 */
                         a.Add("lastDate", "");                                                /* 上一次完成时间 */
                     }
+                    useDmhyKeyword(jsonList1);
                     writeLocalJson(jsonList1, jsonName);
                     readLocalJson(Path.Combine(appdataFAPI, @jsonName));
                     checkBox1.Checked = false;
@@ -1013,6 +1014,110 @@ KPDM
                                         select a).ToList(); ;
         }
 
+        private void useDmhyKeyword(Newtonsoft.Json.Linq.JArray jsonList)
+        {
+            if(jsonList==null || jsonList.Count == 0)
+            {
+                return;
+            }
+            MyWebClient webClient = new MyWebClient();
+            byte[] contentBytes = webClient.DownloadData(dmhyBgmListUrl);
+            string content = Encoding.UTF8.GetString(contentBytes, 0, contentBytes.Length);
+            int startIndex = content.IndexOf("sunarray.push(['");
+            List<string[]> bgmList = new List<string[]>();
+            while (startIndex != -1)
+            {
+                int endIndex = content.IndexOf("','", startIndex);
+                if (endIndex == -1)
+                {
+                    break;
+                }
+                startIndex = endIndex + 3;
+                endIndex = content.IndexOf("','", startIndex);
+                if (endIndex == -1)
+                {
+                    break;
+                }
+                string bgmName = content.Substring(startIndex, endIndex - startIndex);
+                startIndex = endIndex + 3;
+                endIndex = content.IndexOf("','", startIndex);
+                string bgmKeyword = content.Substring(startIndex, endIndex - startIndex);
+                bgmList.Add(new string[] { bgmName, bgmKeyword});
+                startIndex = content.IndexOf("array.push(['", endIndex);
+            }
+            if (bgmList.Count > 0)
+            {
+                foreach (Newtonsoft.Json.Linq.JObject json in jsonList)
+                {
+                    foreach(string[] bgm in bgmList)
+                    {
+                        if (isSameAnimate(json["titleCN"].ToString(), bgm[0]))
+                        {
+                            json.Remove("searchKeyword");
+                            json.Add("searchKeyword", System.Web.HttpUtility.UrlDecode(bgm[1]));
+                            bgmList.Remove(bgm);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private bool isSameAnimate(string name1, string name2)
+        {
+            int lcs = GetLCS(name1, name2);
+            string shortName = name1.Length > name2.Length ? name2 : name1;
+            if ((double)lcs / shortName.Length >= 0.7)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private int GetLCS(string str1, string str2)
+        {
+            int[,] table;
+            return GetLCSInternal(str1, str2, out table);
+        }
+
+        private int GetLCSInternal(string str1, string str2, out int[,] matrix)
+        {
+            matrix = null;
+
+            if (string.IsNullOrEmpty(str1) || string.IsNullOrEmpty(str2))
+            {
+                return 0;
+            }
+
+            int[,] table = new int[str1.Length + 1, str2.Length + 1];
+            for (int i = 0; i < table.GetLength(0); i++)
+            {
+                table[i, 0] = 0;
+            }
+            for (int j = 0; j < table.GetLength(1); j++)
+            {
+                table[0, j] = 0;
+            }
+
+            for (int i = 1; i < table.GetLength(0); i++)
+            {
+                for (int j = 1; j < table.GetLength(1); j++)
+                {
+                    if (str1[i - 1] == str2[j - 1])
+                        table[i, j] = table[i - 1, j - 1] + 1;
+                    else
+                    {
+                        if (table[i, j - 1] > table[i - 1, j])
+                            table[i, j] = table[i, j - 1];
+                        else
+                            table[i, j] = table[i - 1, j];
+                    }
+                }
+            }
+
+            matrix = table;
+            return table[str1.Length, str2.Length];
+        }
 
         private void readLocalJson(string jsonName) /* 读取动画详细信息json 本地 */
         {
