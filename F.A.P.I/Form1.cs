@@ -147,6 +147,14 @@ namespace F.A.P.I
                     checkBox1.Checked = !checkBox1.Checked;
                     checkBox1.Checked = !checkBox1.Checked;
                 }
+                if (MyIni.Read("StartFAPI") == "1")
+                {
+                    FAPI();
+                }
+                else
+                {
+                    MyIni.Write("StartFAPI", "0");
+                }
             }
             catch (Exception ex)
             {
@@ -157,7 +165,7 @@ namespace F.A.P.I
         private void OnTimedEvent(object sender, EventArgs e)
         {
             if (checkBox5.CheckState == CheckState.Checked)
-                this.button1_Click(null, null);
+                FAPI();
         }
 
 
@@ -233,6 +241,9 @@ namespace F.A.P.I
                 MyIni.Write("ProxyUserName", "ProxyUserName");
                 MyIni.Write("ProxyPassword", "ProxyPassword");
 
+                MyIni.Write("StartFAPI", "0");
+                MyIni.Write("StartMinimized", "0");
+
                 loadconfig_1();
             }
         }
@@ -271,6 +282,15 @@ namespace F.A.P.I
             {
                 checkBox4.Checked = false;
             }
+            if (MyIni.Read("StartMinimized") == "1")
+            {
+                this.WindowState = FormWindowState.Minimized;
+                this.ShowInTaskbar = false;
+            }
+            else  
+            {
+                MyIni.Write("StartMinimized", "0");
+            }
             comboBox4.SelectedIndex = Int32.Parse(MyIni.Read("Ffrom"));
 
             ProxyDetails.ProxyType = (ProxyType)System.Enum.Parse(typeof(ProxyType), MyIni.Read("ProxyType"));
@@ -293,8 +313,8 @@ namespace F.A.P.I
             else
             {
                 /* 第一行空格 */
-                string fansubtmp = @"GB MP4 720p 1080p 576p 720P 1080P 576P 新番 BIG5 1月 2月 3月 4月 5月 6月 7月 8月 9月 10月 11月 12月 第 话 讨论 一月 二月 三月 四月 五月 六月 七月 八月 九月 十月 十一月 十二月
-预告 預告 pv ";
+                string fansubtmp = @"GB MP4 720p 1080p 576p 720P 1080P 576P 1280 720 新番 BIG5 1月 2月 3月 4月 5月 6月 7月 8月 9月 10月 11月 12月 第 话 讨论 一月 二月 三月 四月 五月 六月 七月 八月 九月 十月 十一月 十二月 01月 04月 07月 11月 10Bit BDRIP
+预告 預告 pv 英语 延後 HEVC_P10 1080 Hi10P HEVC_Main10";
                 System.IO.File.WriteAllText(@filterListtxt, fansubtmp);
                 string[] bababab = readfilterList().Split(' '); ;
                 filterList = bababab.ToList();
@@ -530,7 +550,7 @@ KPDM
             }
             return (str_url);
         }
-
+         
 
         private bool filter(JsonClass jc, Element td)
         {
@@ -839,7 +859,183 @@ KPDM
             return (str_url);
         }
 
+        string getTorrentFromAcgRip(string keywordURL, bool longepisode, JsonClass jc) /* 获取种子 */
+        {
+            bool bb = jc.longepisode == "1" ? true : false;
+            List<string> filterEpisode = new List<string>();
+            if (!bb)
+            {
+                /*
+                 * if (jc.episode.Equals(comboBox2.SelectedItem.ToString()))
+                 * {
+                 */
 
+                int countttttt = 0;
+                try
+                {
+                    countttttt = Int32.Parse(jc.episode);
+                }
+                catch (Exception e)
+                {
+                    countttttt = 0;
+                }
+                int episode_before = countttttt - 1;
+
+                for (int q = episode_before; q > -1; --q)
+                {
+                    filterEpisode.Add((q < 10 ? "0" + q : q + ""));
+                }
+                /* } */
+            }
+            string str_url = "nothing";
+            keywordURL = keywordURL.Replace("\"", "");
+
+            if ((from a in kwList
+                 where a == keywordURL
+                 select a).ToList().Count == 0)
+            {
+                /* kwList.Add(keywordURL); */
+            }
+            else
+            {
+                kwList.Add(keywordURL);
+                return ("fail");
+            }
+            try
+            {
+                IFormatProvider culture = new CultureInfo("en-US", true);
+                /*下载网页源代码 */
+                MyWebClient webClient = new MyWebClient();
+                string acg_rip = "https://acg.rip/";
+
+                string url = "https://acg.rip/?term=" + keywordURL;
+
+                string htmlString = Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(url));
+
+                Document doc = NSoup.NSoupClient.Parse(htmlString);
+
+                int countmax = 0;
+                NSoup.Select.Elements tables = doc.Select("table[class=table table-hover table-condensed post-index]");
+
+                if (tables.Count == 0)
+                {
+                    return ("nothing");
+                }
+                Element table = tables.First();
+                int trCount = table.Select("tr").Count - 1;       /* 找不到结果也会是1 */
+                Element tr = null;
+                for (var i = 0; i < trCount; ++i)                     /* 第一行是标题 */
+                {
+                    try
+                    {
+                        if (i == 0)
+                        {
+                            NSoup.Select.Elements trs = doc.Select("table[class=table table-hover table-condensed post-index]").First().Select("tr:eq(" + i + ")");
+                            tr = doc.Select("table[class=table table-hover table-condensed post-index]").First().Select("tr:eq(" + i + ")").Eq(1).First();
+                        }
+                        else
+                        {
+                            tr = doc.Select("table[class=table table-hover table-condensed post-index]").First().Select("tr:eq(" + i + ")").First();
+                        }
+
+                        bool filterflag = false;
+                        Element td = tr.Select("td:eq(1)").First();
+                        filterflag = filter(jc, td);
+                        if (filterflag)
+                        {
+                            continue;
+                        }
+
+                        if (!longepisode)                                                                                             /* 如果是长期连载的 无视开播时间 */
+                        {
+                            string time_string = tr.Select("td:eq(0)").First().Select("div").Eq(1).First().Text();
+                            if (time_string.IndexOf("分钟") > -1)
+                            {
+
+                            }
+                            else if (time_string.IndexOf("小时") > -1)
+                            {
+
+                            }
+                            else if (time_string.IndexOf("一天") > -1)
+                            {
+
+                            }
+                            else if (time_string.IndexOf("年") > -1)
+                            {
+                                continue;
+                            }
+                            else if (time_string.IndexOf("月") > -1)
+                            {
+                                time_string = time_string.Replace("个月", "").Trim();
+                                int months = Int16.Parse(time_string);
+                                months *= -1;
+                                DateTime dateVal = DateTime.Now.AddMonths(months);//DateTime.ParseExact(time_doc.Text(), "yyyy/MM/dd HH:mm", culture);  /* 片时间 */
+                                string monthtmp = comboBox2.Items[comboBox2.SelectedIndex].ToString().Length < 2 ? "0" + comboBox2.Items[comboBox2.SelectedIndex].ToString() : comboBox2.Items[comboBox2.SelectedIndex].ToString();
+                                string asdasdsad = comboBox3.Items[comboBox3.SelectedIndex].ToString() + "/"
+                                                  + monthtmp + "/01 00:00";
+                                DateTime currentSeason = DateTime.ParseExact(asdasdsad, "yyyy/MM/dd HH:mm", culture);                 /* 本季时间 */
+                                if (DateTime.Compare(dateVal, currentSeason) < 0)                                                   /* 片要比本季时间大 */
+                                    continue;
+                            }
+                            else if (time_string.IndexOf("天") > -1)
+                            {
+                                time_string = time_string.Replace("天", "").Trim();
+                                int days = Int16.Parse(time_string);
+                                days *= -1;
+                                DateTime dateVal = DateTime.Now.AddDays(days); //DateTime.ParseExact(time_doc.Text(), "yyyy/MM/dd HH:mm", culture);  /* 片时间 */
+
+                                string monthtmp = comboBox2.Items[comboBox2.SelectedIndex].ToString().Length < 2 ? "0" + comboBox2.Items[comboBox2.SelectedIndex].ToString() : comboBox2.Items[comboBox2.SelectedIndex].ToString();
+                                string asdasdsad = comboBox3.Items[comboBox3.SelectedIndex].ToString() + "/"
+                                                  + monthtmp + "/01 00:00";
+                                DateTime currentSeason = DateTime.ParseExact(asdasdsad, "yyyy/MM/dd HH:mm", culture);                 /* 本季时间 */
+                                if (DateTime.Compare(dateVal, currentSeason) < 0)                                                   /* 片要比本季时间大 */
+                                    continue;
+                            }  
+                        }
+
+                        Element countt = tr.Select("td:eq(4)").First().Select("span").Eq(2).First();
+
+
+                        int count = 0;
+                        try
+                        {
+                            count = Int32.Parse(countt.Text());
+                        }
+                        catch (Exception e)
+                        {
+                            count = 0;
+                        }
+
+
+                        if (count >= countmax)
+                        {
+                            Element torrent = tr.Select("td:eq(2)").First().Select("a").First();     /* 磁链地址 */
+                            str_url = acg_rip + torrent.Attr("href");
+                            countmax = count;
+                        }
+                    }
+                    catch (Exception eeeee)
+                    {
+                        MessageBox.Show(jc.searchKeyword + " " + jc.episode + " tmd出错了,请联系tmd kenqq");
+                        MessageBox.Show(eeeee.ToString());
+                        /* str_url = "asd"; */
+                    }
+                }
+            }
+            catch (System.Net.WebException e)
+            {
+                kwList.Add(keywordURL);
+                return ("fail");
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+                kwList.Add(keywordURL);
+                return ("fail");
+            }
+            return (str_url);
+        }
         private ArrayList readFansub() /* 读取字幕组 可以手动维护 */
         {
             StreamReader sr = new StreamReader(@fansubtxt, Encoding.GetEncoding("UTF-8"));
@@ -979,6 +1175,9 @@ KPDM
             {
                 try
                 {
+                    var pt = ProxyDetails.ProxyType;
+                    ProxyDetails.ProxyType = (ProxyType)System.Enum.Parse(typeof(ProxyType), "None");
+
                     MyWebClient webClient = new MyWebClient();
                     byte[] b = webClient.DownloadData(url);
                     string jsonText = Encoding.UTF8.GetString(b, 0, b.Length);
@@ -1003,6 +1202,8 @@ KPDM
                     writeLocalJson(jsonList1, jsonName);
                     readLocalJson(Path.Combine(appdataFAPI, @jsonName));
                     checkBox1.Checked = false;
+
+                    ProxyDetails.ProxyType = pt;
                 }
                 catch (Exception ex)
                 {
@@ -1262,6 +1463,12 @@ KPDM
                             {
                                 keyword = getTorrentFromDmhy_1(jc.searchKeyword, jc.episode, jc.fansub, filterEpisode);
                             }
+                            else if (comboBox4.SelectedItem.ToString().IndexOf("acg.rip") > -1)
+                            {
+                                keyword = jc.searchKeyword + " " + jc.episode + " " + jc.fansub;
+                                keyword = keyword.Replace("\u3000", " ");
+                                keyword = getTorrentFromAcgRip(keyword, bb, jc);
+                            }
 
 
                             if (keyword != null && keyword != "nothing" && keyword != "fail" && keyword != "time")
@@ -1400,6 +1607,10 @@ KPDM
                     MessageBox.Show("完成鸟");
             }
         }
+
+ 
+
+ 
 
         private void totxt(string torrentList)
         {
@@ -1549,8 +1760,12 @@ KPDM
 
         private void button1_Click(object sender, System.EventArgs e)
         {
+            FAPI();
             changWindowsSize();
+        }
 
+        private void FAPI()
+        {
             Thread demoThread = new Thread(new ParameterizedThreadStart(threadMethod));
             demoThread.IsBackground = true;
             demoThread.Start("处理中");      /* 启动线程 */
@@ -1805,12 +2020,12 @@ KPDM
         {
             /* get bilibili html for bangumi */
 
-            /*
+           /*
 
             try
             {
                 MyWebClient webClient = new MyWebClient();
-                string urlaaaaaaaaa = "http://www.bilibili.com/list/b--a--t-0---d---3.html";
+                string urlaaaaaaaaa = "http://www.bilibili.com/list/b--a2-2015-t-0--0-d---3.html";
                 string htmlString = "";
                 string bilibili = "http://www.bilibili.com";
 
@@ -1870,8 +2085,8 @@ KPDM
             {
                 string asd222 = "";
             }
+           
              */
-             
 
 
             /* get pokemon pkm */
