@@ -122,6 +122,7 @@
             this.dataGridView1.Size = new System.Drawing.Size(1276, 110);
             this.dataGridView1.TabIndex = 6;
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
+            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
             // 
             // titleCN
@@ -197,7 +198,7 @@
             this.isOrderRabbit.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.isOrderRabbit.DataPropertyName = "isOrderRabbit";
             this.isOrderRabbit.FalseValue = "0";
-            this.isOrderRabbit.HeaderText = "是否订阅兔子";
+            this.isOrderRabbit.HeaderText = "是否订阅chino";
             this.isOrderRabbit.MinimumWidth = 90;
             this.isOrderRabbit.Name = "isOrderRabbit";
             this.isOrderRabbit.TrueValue = "1";
@@ -525,7 +526,7 @@
             this.checkBox5.Name = "checkBox5";
             this.checkBox5.Size = new System.Drawing.Size(96, 16);
             this.checkBox5.TabIndex = 16;
-            this.checkBox5.Text = "5分钟fapYi次";
+            this.checkBox5.Text = "?分钟fapYi次";
             this.checkBox5.UseVisualStyleBackColor = true;
             this.checkBox5.CheckedChanged += new System.EventHandler(this.checkBox5_CheckedChanged);
             // 
@@ -626,12 +627,12 @@
             // label1
             // 
             this.label1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.label1.Font = new System.Drawing.Font("MS PMincho", 8F);
+            this.label1.Font = new System.Drawing.Font("MS PMincho", 9F);
             this.label1.Location = new System.Drawing.Point(0, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(320, 48);
             this.label1.TabIndex = 11;
-            this.label1.Text = "ゆっくりできない！！！";
+            this.label1.Text = resources.GetString("label1.Text");
             this.label1.Click += new System.EventHandler(this.label1_Click_1);
             this.label1.DoubleClick += new System.EventHandler(this.label1_Click);
             // 
@@ -652,7 +653,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.ImeMode = System.Windows.Forms.ImeMode.Alpha;
             this.Name = "Form1";
-            this.Text = "F.A.P.I.2 ver.0.7";
+            this.Text = "F.A.P.I.2 ver.1.1.2";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
             this.Resize += new System.EventHandler(this.Form1_Resize);
@@ -705,6 +706,15 @@
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.ComboBox comboBox4;
         private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.CheckBox checkBox4;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.CheckBox checkBox5;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Panel panel6;
+        private System.Windows.Forms.Panel panel7;
+        private System.Windows.Forms.Button button9;
         private System.Windows.Forms.DataGridViewTextBoxColumn titleCN;
         private System.Windows.Forms.DataGridViewTextBoxColumn titleJP;
         private System.Windows.Forms.DataGridViewTextBoxColumn officalSite;
@@ -721,15 +731,6 @@
         private System.Windows.Forms.DataGridViewComboBoxColumn fansub;
         private System.Windows.Forms.DataGridViewTextBoxColumn lastDate;
         private System.Windows.Forms.DataGridViewButtonColumn clearTime;
-        private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.CheckBox checkBox4;
-        private System.Windows.Forms.NotifyIcon notifyIcon1;
-        private System.Windows.Forms.CheckBox checkBox5;
-        private System.Windows.Forms.Panel panel5;
-        private System.Windows.Forms.Button button8;
-        private System.Windows.Forms.Panel panel6;
-        private System.Windows.Forms.Panel panel7;
-        private System.Windows.Forms.Button button9;
     }
 }
 

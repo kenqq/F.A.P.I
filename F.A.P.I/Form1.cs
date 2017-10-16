@@ -22,6 +22,9 @@ using System.Timers;
 using MyProg;
 using Seringa.Engine.Implementations.Proxy;
 using Seringa.Engine.Enums;
+using OpenQA.Selenium;
+using OpenQA.Selenium.IE;
+using OpenQA.Selenium.Remote;
 
 namespace F.A.P.I
 {
@@ -29,7 +32,7 @@ namespace F.A.P.I
     {
         public List<JsonClass> jsonList;
         public List<archive> archiveList;
-        public string bgmlist = "http://bgmlist.com/";
+        public string bgmlist = "";//http://bgmlist.com/
         public static string dmhyBgmListUrl = "https://share.dmhy.org/cms/page/name/programme.html";
         public int day = (int)DateTime.Now.DayOfWeek;
         public int month = (int)DateTime.Now.Month;
@@ -55,10 +58,17 @@ namespace F.A.P.I
         public static ArrayList lad; /* 临时dmhy 预先加载10页 */
         public static ProxyDetails ProxyDetails = new ProxyDetails();
 
+        public static string dmhycookies = "";
+
         public ContextMenu contextMenu1 = new ContextMenu();
 
         public Form1()
         {
+            //dmhycookies=getDmhyCookies();
+            dmhycookies = "1";
+
+
+
             System.Net.ServicePointManager.DefaultConnectionLimit = 100;
             try
             {
@@ -107,9 +117,11 @@ namespace F.A.P.I
                 //comboBox4.SelectedIndex = 0;
                 label1.Text = @"
 ＿人人人人人人人人人人人人人人人人人人人人＿
-＞　　ひどい！ゆっくりできないひとはキライだよ！！　＜
+＞　　すっごーい！君はＤＤoＳのフレンズなんだね！！　＜
 ￣^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^￣
 ";
+
+ 
                 loadconfig();
                 loadfansub();
                 loadfilterList();
@@ -137,7 +149,20 @@ namespace F.A.P.I
 
                 System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer() { };
                 timer.Tick += new EventHandler(OnTimedEvent);
-                timer.Interval = 1000 * 60 * 5;
+                int autoFapiInternal = 5;
+                try {
+                    autoFapiInternal = Int32.Parse(MyIni.Read("autoFapiInternal"));
+                    if (autoFapiInternal<1)
+                    {
+                        autoFapiInternal = 5;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    autoFapiInternal = 5;
+                }
+
+                timer.Interval = 1000 * 60 * autoFapiInternal;
                 timer.Enabled = true;
 
                 initflag = true;
@@ -160,6 +185,47 @@ namespace F.A.P.I
             {
                 MessageBox.Show(ex.ToString());
             }
+        }
+
+        private string getDmhyCookies()
+        {
+            int i = 0;
+            var s = "";
+            while (true)
+            {
+                var options = new InternetExplorerOptions()
+                {
+                    InitialBrowserUrl = "https://share.dmhy.org/",
+                    IntroduceInstabilityByIgnoringProtectedModeSettings = true,
+                    IgnoreZoomLevel = true,
+                    EnableNativeEvents = false
+                };
+                IWebDriver driver = new InternetExplorerDriver(options);
+
+
+                //driver.Url = "https://share.dmhy.org/";
+                Thread.Sleep(12000);
+                var _cookies = driver.Manage().Cookies.AllCookies;
+                driver.Quit();
+                if (_cookies.Count > 3)
+                {
+                    foreach (var a in _cookies)
+                    {
+                        s += a + ";";
+                    }
+                    break;
+                }
+                else
+                {
+                    ++i;
+                    if (i == 3)
+                    {
+                        MessageBox.Show("清理一下ie cookies!");
+                        Application.Exit();
+                    }
+                }
+            }
+            return s;
         }
 
         private void OnTimedEvent(object sender, EventArgs e)
@@ -243,6 +309,8 @@ namespace F.A.P.I
 
                 MyIni.Write("StartFAPI", "0");
                 MyIni.Write("StartMinimized", "0");
+                MyIni.Write("torrentPath", "0");
+                MyIni.Write("autoFapiInternal", "5");
 
                 loadconfig_1();
             }
@@ -472,7 +540,7 @@ KPDM
             {
                 IFormatProvider culture = new CultureInfo("en-US", true);
                 /*下载网页源代码 */
-                MyWebClient webClient = new MyWebClient();
+                MyWebClient webClient = new MyWebClient(dmhycookies);
                 string ktxp = "http://bt.ktxp.com";
                 string sort_addate = "&order=addate";
                 string sort_seeders = "&order=seeders";
@@ -635,7 +703,7 @@ KPDM
             {
                 IFormatProvider culture = new CultureInfo("en-US", true);
                 /*下载网页源代码 */
-                MyWebClient webClient = new MyWebClient();
+                MyWebClient webClient = new MyWebClient(dmhycookies);
                 string url = "http://www.nyaa.se/?page=search&term=" + keywordURL
                                   + "&cats=1_0&minage=0&maxage=14";
                 string htmlString = Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(url));
@@ -743,12 +811,13 @@ KPDM
             {
                 IFormatProvider culture = new CultureInfo("en-US", true);
                 /*下载网页源代码 */
-                MyWebClient webClient = new MyWebClient();
-                string dmhy = "http://share.dmhy.org";
+                MyWebClient webClient = new MyWebClient(dmhycookies);
 
-                string url = "http://share.dmhy.org/topics/list?keyword=" + keywordURL + "&team_id=0&order=date-desc";
+                string dmhy = "https://share.dmhy.org";
 
-                /* string url = "http://share.dmhy.org/"; */
+                string url = "https://share.dmhy.org/topics/list?keyword=" + keywordURL + "&team_id=0&order=date-desc";
+
+                /* string url = "https://share.dmhy.org/"; */
 
                 string htmlString = Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(url));
 
@@ -905,7 +974,7 @@ KPDM
             {
                 IFormatProvider culture = new CultureInfo("en-US", true);
                 /*下载网页源代码 */
-                MyWebClient webClient = new MyWebClient();
+                MyWebClient webClient = new MyWebClient(dmhycookies);
                 string acg_rip = "https://acg.rip/";
 
                 string url = "https://acg.rip/?term=" + keywordURL;
@@ -1053,8 +1122,8 @@ KPDM
 
         private void readArchiveJson() /* 读取json汇总的json */
         {
-            MyWebClient webClient = new MyWebClient();
-            string url = "http://bgmlist.com/json/archive.json";
+            MyWebClient webClient = new MyWebClient(dmhycookies);
+            string url = "https://bgmlist.com/tempapi/archive.json";
             bool local = System.IO.File.Exists(archive);
             try
             {
@@ -1163,9 +1232,9 @@ KPDM
                     }
                 }
             }
-            int adasd = "http://bgmlist.com/json/".Length;
-            jsonName = url.Substring(adasd, url.Length - adasd);
-
+            int adasd = "https://bgmlist.com/tempapi/bangumi/".Length;
+            jsonName = url.Substring(adasd, url.Length - adasd).Replace("/", "-");
+            
             /* **   本地json没有创建的话 */
             if (System.IO.File.Exists(Path.Combine(appdataFAPI, @jsonName)))
             {
@@ -1176,9 +1245,9 @@ KPDM
                 try
                 {
                     var pt = ProxyDetails.ProxyType;
-                    ProxyDetails.ProxyType = (ProxyType)System.Enum.Parse(typeof(ProxyType), "None");
+                    //ProxyDetails.ProxyType = (ProxyType)System.Enum.Parse(typeof(ProxyType), "None");
 
-                    MyWebClient webClient = new MyWebClient();
+                    MyWebClient webClient = new MyWebClient(dmhycookies);
                     byte[] b = webClient.DownloadData(url);
                     string jsonText = Encoding.UTF8.GetString(b, 0, b.Length);
                     Newtonsoft.Json.Linq.JObject aaaa = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(jsonText);
@@ -1193,7 +1262,17 @@ KPDM
                     {
                         a.Add("isOrderRabbit", "0");                                          /* 是否订阅 */
                         a.Add("episode", "01");                                               /* 集数 默认01 */
-                        a.Add("searchKeyword", a["titleCN"].ToString().Replace("-", " "));  /* 搜索用关键字 默认用json提供的 */
+
+
+                        String sad = a["titleCN"].ToString().Replace("-", " ");
+                        if (sad.Trim()=="")
+                        {
+                            sad = a["titleJP"].ToString().Replace("-", " ");
+                            a["titleCN"] = sad;
+
+                        }
+
+                        a.Add("searchKeyword",sad);  /* 搜索用关键字 默认用json提供的 */
                         a.Add("fansub", " ");                                                 /* 字幕组 */
                         a.Add("longepisode", "0");                                            /* 长期连载 */
                         a.Add("lastDate", "");                                                /* 上一次完成时间 */
@@ -1221,7 +1300,9 @@ KPDM
             {
                 return;
             }
-            MyWebClient webClient = new MyWebClient();
+            //MessageBox.Show(dmhycookies);
+
+            MyWebClient webClient = new MyWebClient(dmhycookies);
             byte[] contentBytes = webClient.DownloadData(dmhyBgmListUrl);
             string content = Encoding.UTF8.GetString(contentBytes, 0, contentBytes.Length);
             int startIndex = content.IndexOf("sunarray.push(['");
@@ -1555,7 +1636,7 @@ KPDM
             /*
              * if (strCmdText.Count>0)
              * {
-             *  System.Diagnostics.Process.Start("explorer", "http://share.dmhy.org/");
+             *  System.Diagnostics.Process.Start("explorer", "https://share.dmhy.org/");
              * }
              *
              * foreach (string s in strCmdText)
@@ -1600,7 +1681,8 @@ KPDM
 
             handling = false;
             writeLocalJson(jsonList, jsonName);
-            changWindowsSize();
+            this.notifyIcon1.ShowBalloonTip(1000, "Mission complete", @"朝だぞ。人間が朝の6時に、起きれるか！", ToolTipIcon.Info);//
+            //changWindowsSize();
             if (handllist.Count == 1)
             {
                 if (checkBox5.CheckState != CheckState.Checked)
@@ -1623,7 +1705,16 @@ KPDM
             {
                 Directory.CreateDirectory(a);      /* 创建文件夹 */
             }
-            System.IO.File.WriteAllText(Path.Combine(a, DateTime.Now.ToString("yyyyMMddHHmmssffffff") + ".txt"), torrentList);
+            string torrentsTxt=Path.Combine(a, DateTime.Now.ToString("yyyyMMddHHmmssffffff") + ".txt");
+            System.IO.File.WriteAllText(torrentsTxt, torrentList);
+            if (MyIni.Read("torrentPath") != null && !MyIni.Read("torrentPath").Equals(""))
+            {
+                string torrentsTxtDown = " -d --header=\"User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:49.0) Gecko/20100101 Firefox/49.0\"  --header=\"Accept-Encoding: gzip, deflate, br\""
+                    +" -c -w 6 -t 0 -T 30 -i " 
+                    + torrentsTxt + @" -P " + MyIni.Read("torrentPath");
+                Process.Start("wget.exe", torrentsTxtDown);
+                //-c 断点续传 -w 等待时间  -t 重试次数 -T timeout秒数 -i 读取文件 -P 保存路径
+            }
         }
 
 
@@ -1670,7 +1761,7 @@ KPDM
             }
 
 
-            string dmhy = "http://share.dmhy.org";
+            string dmhy = "https://share.dmhy.org";
 
             ArrayList lada = DmhyFiveDoces();
 
@@ -1738,12 +1829,12 @@ KPDM
                     lad = new ArrayList();
                     IFormatProvider culture = new CultureInfo("en-US", true);
                     /*下载网页源代码 */
-                    MyWebClient webClient = new MyWebClient();
+                    MyWebClient webClient = new MyWebClient(dmhycookies);
                     string url;
 
                     for (int i = 1; i < 4 + 1; ++i)
                     {
-                        url = "http://share.dmhy.org/topics/list/sort_id/2/page/" + i;
+                        url = "https://share.dmhy.org/topics/list/sort_id/2/page/" + i;
                         lad.Add(NSoup.NSoupClient.Parse(Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(url))));
                     }
                 }
@@ -2024,7 +2115,7 @@ KPDM
 
             try
             {
-                MyWebClient webClient = new MyWebClient();
+                MyWebClient webClient = new MyWebClient(dmhycookies);
                 string urlaaaaaaaaa = "http://www.bilibili.com/list/b--a2-2015-t-0--0-d---3.html";
                 string htmlString = "";
                 string bilibili = "http://www.bilibili.com";
@@ -2039,7 +2130,7 @@ KPDM
 
                 ArrayList al = new ArrayList();
                 ArrayList a2 = new ArrayList();
-                foreach (Element a in table)
+                foreach (Element a in table)`
                 {
                     string href = bilibili + a.Select("div[class=t]").First().Select("a").First().Attr("href");
                     string title = a.Select("div[class=t]").First().Select("a").First().Attr("title");
@@ -2095,7 +2186,7 @@ KPDM
             /*
              * try
              * {
-             *  MyWebClient webClient = new MyWebClient();
+             *  MyWebClient webClient = new MyWebClient(dmhycookies);
              *  string urlaaaaaaaaa = "http://www.pokedit.com/download/default-pkm/pokemon-black/";
              *  string htmlString = "";
              *
@@ -2287,6 +2378,11 @@ KPDM
                     this.Hide();
                     this.notifyIcon1.Visible = true;
                 }
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

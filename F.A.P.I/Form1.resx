@@ -213,6 +213,21 @@
   <metadata name="clearTime.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <data name="label1.Text" xml:space="preserve">
+    <value>　　　　新スレとうちゃーく！　　　　　　　　　　　　　　　　　　　　　　　　,,,,　;;;;　(;;;
+　　　　　　　　わーぃ　ははっ　　たーのしー！　　　　　　　　　　　　　:　（:;;;　(:::
+　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　:（:;;:; ;;　(　::;;;;
+　　　　　　　　　 ||　　　　　　/II　　　　　　　　　　　　　　　　　　　　　　_,,,,　 ::::;;;
+　　　　　　　　　/＼---- (&gt;--&lt;)　　　　　　　　　　 //二二二二//　::::;;;　::::;;;;
+　　　　　　　　 //二＼-- (((^▽^))　　　　　　　　 //　　　　　　//　　　　::::;;;:::;;;
+　　　　　　　　//二二.＼-⊂,''''''''⊃　　　　　　　//　　　　　　//　　::::;::::;;;::::
+　　　　　　　 //二二二/＼ -),i,,,,,,,i,&gt;-＼　　　 //　　　　　　//　::　;;;　;::;;;::::;;;
+　　　　　　　//二二二//.　＼.-＼＼＼-＼.　//　　　　　　//　　:　:;;;::;;;;::;;::;;;;
+　　　　　　 //二二二//　 　　＼ ＼θθ--//　　　　　　//　-　-------
+　前スレ　//　　　　 //　　　　　 ＼.-----//--＼　　　//　　　- - --- --
+　　　　　-- - - - - - --　　　　　　--- - - --- - -- -
+　　　　　　-- -　 -　　-　　　　　　　　　　-　 　　新スレ　　　-　 -</value>
+  </data>
   <metadata name="notifyIcon1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>

@@ -19,6 +19,10 @@ namespace F.A.P.I
 
         //time in milliseconds
         private int timeout;
+        private string cookies; 
+
+        
+
         public int Timeout
         {
             get
@@ -41,6 +45,12 @@ namespace F.A.P.I
             this.timeout = timeout;
         }
 
+        public MyWebClient(string cookies)
+        {
+            this.cookies = cookies;
+            this.timeout = 60000;
+        }
+
         protected override WebRequest GetWebRequest(Uri address)
         {
             WebRequest result = null;
@@ -54,14 +64,20 @@ namespace F.A.P.I
             {
                 if (ProxyDetails.ProxyType == ProxyType.Proxy)
                 {
-                    result = WebRequest.Create(address);
+                    result = (HttpWebRequest)WebRequest.Create(address);
                     HttpWebRequest request = (HttpWebRequest)result;
                     request.Proxy = new WebProxy(ProxyDetails.FullProxyAddress);
                     request.Timeout = this.timeout;
                     request.AllowAutoRedirect = true;  //这里不允许再继续跳转.否则取不到了
                     request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
                     if (!string.IsNullOrEmpty(UserAgent))
+                    {
                         request.UserAgent = UserAgent;
+                    }
+                    if (address.ToString().IndexOf("dmhy")>-1)
+                    {
+                        addDmhyHeader(result);
+                    }
                 }
                 else if (ProxyDetails.ProxyType == ProxyType.Socks)
                 {
@@ -72,6 +88,10 @@ namespace F.A.P.I
                     //((HttpWebRequest)result).AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
                     //TODO: implement user and password
 
+                    if (address.ToString().IndexOf("dmhy") > -1)
+                    {
+                        addSocksDmhyHeader(result);
+                    }
                 }
                 else if (ProxyDetails.ProxyType == ProxyType.None)
                 {
@@ -81,19 +101,63 @@ namespace F.A.P.I
                     request.AllowAutoRedirect = true;  //这里不允许再继续跳转.否则取不到了
                     request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
                     if (!string.IsNullOrEmpty(UserAgent))
+                    {
                         request.UserAgent = UserAgent;
+                    }
+                    if (address.ToString().IndexOf("dmhy") > -1)
+                    {
+                        addDmhyHeader(result);
+                    }
+                    
                 }
             }
             else
             {
-                result = (HttpWebRequest)WebRequest.Create(address);
-                result.Timeout = this.timeout;
-                ((HttpWebRequest)result).AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-                if (!string.IsNullOrEmpty(UserAgent))
-                    ((HttpWebRequest)result).UserAgent = UserAgent;
+ 
             }
 
             return result;
+        }
+
+        private void addSocksDmhyHeader(WebRequest result)
+        {
+            result.Headers.Add(HttpRequestHeader.Accept, "text/html, application/xhtml+xml, */*");
+            result.Headers.Add(HttpRequestHeader.AcceptLanguage, "zh-CN");
+            result.Headers.Add(HttpRequestHeader.UserAgent, "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko");
+            //result.Headers.Add(HttpRequestHeader.AcceptEncoding, "gzip, deflate");
+            result.Headers.Add(HttpRequestHeader.Connection, "Keep-Alive");
+            result.Headers.Add(HttpRequestHeader.Host, "share.dmhy.org");
+            result.Headers.Add(HttpRequestHeader.Cookie, cookies);
+        }
+
+        private void addDmhyHeader(WebRequest result)
+        {
+            Version currentVersion = Environment.OSVersion.Version;
+            Version compareToVersion = new Version("6.2");
+            if (currentVersion.CompareTo(compareToVersion) >= 0)
+            {//win8及其以上版本的系统  
+                Console.WriteLine("当前系统是WIN8及以上版本系统。");
+                ((HttpWebRequest)result).Accept = "text/html, application/xhtml+xml, image/jxr, */*";
+                result.Headers.Add(HttpRequestHeader.AcceptLanguage, "zh-Hans-CN,zh-Hans;q=0.8,ja;q=0.6,en-US;q=0.4,en;q=0.2");
+                ((HttpWebRequest)result).UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko";
+            }
+            else
+            {
+                Console.WriteLine("当前系统不是WIN8及以上版本系统。");
+                ((HttpWebRequest)result).Accept = "text/html, application/xhtml+xml, */*";
+                result.Headers.Add(HttpRequestHeader.AcceptLanguage, "zh-CN");
+                ((HttpWebRequest)result).UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko";
+            }  
+
+            result.Headers.Add(HttpRequestHeader.AcceptEncoding, "gzip, deflate");
+            ((HttpWebRequest)result).Headers.GetType().InvokeMember("ChangeInternal",
+                System.Reflection.BindingFlags.NonPublic |
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.InvokeMethod, null,
+                ((HttpWebRequest)result).Headers, new object[] { "Host", "share.dmhy.org" }
+            );
+            ((HttpWebRequest)result).KeepAlive = true;
+            result.Headers.Add(HttpRequestHeader.Cookie, cookies);
         }
 
         //protected override WebRequest GetWebRequest(Uri address)
@@ -111,7 +175,7 @@ namespace F.A.P.I
             {
                 try
                 {
-                    if (3 < tryCount)
+                    if (1 < tryCount)
                     {
                         throw new MyWebClientException("地址:" + address + " 连接失败!请检测网络!");
                     }
@@ -130,8 +194,6 @@ namespace F.A.P.I
                     //线程休眼10秒后在试
                     Thread.Sleep(100);
                 }
-
-
             }
             return result;
         }

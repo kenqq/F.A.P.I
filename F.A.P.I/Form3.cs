@@ -136,7 +136,7 @@ namespace F.A.P.I
 
 
         public List<archive> archiveList;
-        public string bgmlist = "http://bgmlist.com/";
+        public string bgmlist = "";//http://bgmlist.com/
 
         private void writeLocalJson(List<JsonClass> jsl, string jsonName)//更新动画信息json
         {
@@ -189,7 +189,7 @@ namespace F.A.P.I
              * */
 
             MyWebClient webClient = new MyWebClient();
-            string url = "http://bgmlist.com/json/archive.json";
+            string url = "https://bgmlist.com/tempapi/archive.json";
             archiveList = new List<I.archive>();
             byte[] b = webClient.DownloadData(url);
             string jsonText = Encoding.UTF8.GetString(b, 0, b.Length);
@@ -238,8 +238,8 @@ namespace F.A.P.I
         }
         private string getJsonName(String url)//读取动画详细信息json
         {
-            int adasd = "http://bgmlist.com/json/".Length;
-            return url.Substring(adasd, url.Length - adasd);
+            int adasd = "https://bgmlist.com/tempapi/bangumi/".Length;
+            return url.Substring(adasd, url.Length - adasd).Replace("/", "-"); 
         }
 
 
@@ -259,14 +259,32 @@ namespace F.A.P.I
                 MyWebClient webClient = new MyWebClient();
                 byte[] b = webClient.DownloadData(url);
                 string jsonText = Encoding.UTF8.GetString(b, 0, b.Length);
-                jsonList1 = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(jsonText);
+                Newtonsoft.Json.Linq.JObject aaaa = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(jsonText);
+
+                jsonList1 = new Newtonsoft.Json.Linq.JArray();
+                foreach (var item in aaaa)
+                {
+                    jsonList1.Add(item.Value);
+                    //Console.WriteLine(item.Key + item.Value);
+                }
                 foreach (Newtonsoft.Json.Linq.JObject a in jsonList1)
                 {
-                    a.Add("isOrderRabbit", "0");//是否订阅
-                    a.Add("episode", "01");//集数 默认01
-                    a.Add("searchKeyword", a["titleCN"].ToString());//搜索用关键字 默认用json提供的
-                    a.Add("fansub", " ");//字幕组
-                    a.Add("longepisode", "0");//长期连载
+                    a.Add("isOrderRabbit", "0");                                          /* 是否订阅 */
+                    a.Add("episode", "01");                                               /* 集数 默认01 */
+
+
+                    String sad = a["titleCN"].ToString().Replace("-", " ");
+                    if (sad.Trim() == "")
+                    {
+                        sad = a["titleJP"].ToString().Replace("-", " ");
+                        a["titleCN"] = sad;
+
+                    }
+
+                    a.Add("searchKeyword", sad);  /* 搜索用关键字 默认用json提供的 */
+                    a.Add("fansub", " ");                                                 /* 字幕组 */
+                    a.Add("longepisode", "0");                                            /* 长期连载 */
+                    a.Add("lastDate", "");                                                /* 上一次完成时间 */
                 }
                 writeLocalJson(jsonList1, jsonName);
                 return readLocalJson(Path.Combine(appdataFAPI, @jsonName));
