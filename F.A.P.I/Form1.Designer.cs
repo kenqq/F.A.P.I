@@ -47,11 +47,15 @@
             this.fansub = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.lastDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clearTime = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.upvote = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.downvote = new System.Windows.Forms.DataGridViewButtonColumn();
             this.panel1 = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panel2 = new System.Windows.Forms.Panel();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.button11 = new System.Windows.Forms.Button();
+            this.button10 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.button5 = new System.Windows.Forms.Button();
@@ -114,7 +118,9 @@
             this.searchKeyword,
             this.fansub,
             this.lastDate,
-            this.clearTime});
+            this.clearTime,
+            this.upvote,
+            this.downvote});
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.Name = "dataGridView1";
@@ -302,6 +308,25 @@
             this.clearTime.Name = "clearTime";
             this.clearTime.Width = 60;
             // 
+            // upvote
+            // 
+            this.upvote.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.upvote.DataPropertyName = "upvote";
+            this.upvote.HeaderText = "upvote";
+            this.upvote.MinimumWidth = 20;
+            this.upvote.Name = "upvote";
+            this.upvote.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.upvote.Width = 20;
+            // 
+            // downvote
+            // 
+            this.downvote.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.downvote.DataPropertyName = "downvote";
+            this.downvote.HeaderText = "downvote";
+            this.downvote.MinimumWidth = 20;
+            this.downvote.Name = "downvote";
+            this.downvote.Width = 20;
+            // 
             // panel1
             // 
             this.panel1.Controls.Add(this.dataGridView1);
@@ -361,6 +386,8 @@
             // 
             // panel3
             // 
+            this.panel3.Controls.Add(this.button11);
+            this.panel3.Controls.Add(this.button10);
             this.panel3.Controls.Add(this.button6);
             this.panel3.Controls.Add(this.checkBox2);
             this.panel3.Controls.Add(this.button5);
@@ -378,9 +405,29 @@
             this.panel3.Size = new System.Drawing.Size(700, 48);
             this.panel3.TabIndex = 0;
             // 
+            // button11
+            // 
+            this.button11.Location = new System.Drawing.Point(173, 3);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(70, 44);
+            this.button11.TabIndex = 29;
+            this.button11.Text = "Submit KEYWORD!";
+            this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
+            // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(88, 3);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(85, 44);
+            this.button10.TabIndex = 28;
+            this.button10.Text = "Synchronize KEYWORD!";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
+            // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(319, 4);
+            this.button6.Location = new System.Drawing.Point(414, 4);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(29, 43);
             this.button6.TabIndex = 27;
@@ -391,7 +438,7 @@
             // checkBox2
             // 
             this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(474, 30);
+            this.checkBox2.Location = new System.Drawing.Point(563, 30);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(48, 16);
             this.checkBox2.TabIndex = 26;
@@ -401,7 +448,7 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(396, 4);
+            this.button5.Location = new System.Drawing.Point(485, 4);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(31, 23);
             this.button5.TabIndex = 25;
@@ -411,7 +458,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(357, 4);
+            this.button4.Location = new System.Drawing.Point(446, 4);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(34, 23);
             this.button4.TabIndex = 24;
@@ -421,7 +468,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(433, 4);
+            this.button3.Location = new System.Drawing.Point(522, 4);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(39, 23);
             this.button3.TabIndex = 23;
@@ -431,7 +478,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(357, 26);
+            this.button2.Location = new System.Drawing.Point(446, 26);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(115, 23);
             this.button2.TabIndex = 22;
@@ -444,7 +491,7 @@
             this.checkBox1.AutoSize = true;
             this.checkBox1.Checked = true;
             this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(474, 9);
+            this.checkBox1.Location = new System.Drawing.Point(563, 9);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(90, 16);
             this.checkBox1.TabIndex = 21;
@@ -454,9 +501,9 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(0, 9);
+            this.button1.Location = new System.Drawing.Point(3, 3);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(146, 23);
+            this.button1.Size = new System.Drawing.Size(85, 44);
             this.button1.TabIndex = 17;
             this.button1.Text = "FAPI!";
             this.button1.UseVisualStyleBackColor = true;
@@ -473,7 +520,7 @@
             "Thu",
             "Fri",
             "Sat"});
-            this.comboBox1.Location = new System.Drawing.Point(150, 11);
+            this.comboBox1.Location = new System.Drawing.Point(248, 11);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(100, 20);
             this.comboBox1.TabIndex = 18;
@@ -482,7 +529,7 @@
             // comboBox3
             // 
             this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(255, 26);
+            this.comboBox3.Location = new System.Drawing.Point(353, 26);
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(60, 20);
             this.comboBox3.TabIndex = 20;
@@ -491,7 +538,7 @@
             // comboBox2
             // 
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(255, 2);
+            this.comboBox2.Location = new System.Drawing.Point(353, 2);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(60, 20);
             this.comboBox2.TabIndex = 19;
@@ -653,7 +700,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.ImeMode = System.Windows.Forms.ImeMode.Alpha;
             this.Name = "Form1";
-            this.Text = "F.A.P.I.2 ver.1.1.2";
+            this.Text = "F.A.P.I.2 ver.1.1.6";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
             this.Resize += new System.EventHandler(this.Form1_Resize);
@@ -731,6 +778,10 @@
         private System.Windows.Forms.DataGridViewComboBoxColumn fansub;
         private System.Windows.Forms.DataGridViewTextBoxColumn lastDate;
         private System.Windows.Forms.DataGridViewButtonColumn clearTime;
+        private System.Windows.Forms.DataGridViewButtonColumn upvote;
+        private System.Windows.Forms.DataGridViewButtonColumn downvote;
+        private System.Windows.Forms.Button button10;
+        private System.Windows.Forms.Button button11;
     }
 }
 

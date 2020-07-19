@@ -27,6 +27,8 @@ namespace F.A.P.I
 
         public string lastDate { get; set; }
 
+        public string upvote { get; set; }
 
+        public string downvote { get; set; }
     }
 }

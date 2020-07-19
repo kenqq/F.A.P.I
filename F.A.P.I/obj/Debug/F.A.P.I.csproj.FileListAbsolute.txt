@@ -58,3 +58,10 @@ D:\Programming\c#\F.A.P.I\F.A.P.I\bin\Debug\WebDriver.dll
 D:\Programming\c#\F.A.P.I\F.A.P.I\bin\Debug\WebDriver.Support.dll
 D:\Programming\c#\F.A.P.I\F.A.P.I\bin\Debug\WebDriver.xml
 D:\Programming\c#\F.A.P.I\F.A.P.I\bin\Debug\WebDriver.Support.xml
+D:\Programming\c#\F.A.P.I\F.A.P.I\bin\Debug\System.Net.Http.Extensions.dll
+D:\Programming\c#\F.A.P.I\F.A.P.I\bin\Debug\System.Net.Http.Primitives.dll
+D:\Programming\c#\F.A.P.I\F.A.P.I\bin\Debug\System.Net.Http.Extensions.xml
+D:\Programming\c#\F.A.P.I\F.A.P.I\bin\Debug\System.Net.Http.Primitives.xml
+D:\Programming\c#\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.csproj.App.config
+D:\Programming\c#\F.A.P.I\F.A.P.I\bin\Debug\RestSharp.dll
+D:\Programming\c#\F.A.P.I\F.A.P.I\bin\Debug\RestSharp.xml
