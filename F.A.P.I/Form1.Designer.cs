@@ -662,7 +662,7 @@
             this.comboBox4.Items.AddRange(new object[] {
             "dmhy",
             "acg.rip",
-            "nya",
+            "nya(新)",
             "dmhy临时版",
             "ktxp"});
             this.comboBox4.Location = new System.Drawing.Point(3, 3);
@@ -700,7 +700,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.ImeMode = System.Windows.Forms.ImeMode.Alpha;
             this.Name = "Form1";
-            this.Text = "F.A.P.I.2 ver.1.1.7";
+            this.Text = "F.A.P.I.2 ver.1.2.0";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
             this.Resize += new System.EventHandler(this.Form1_Resize);

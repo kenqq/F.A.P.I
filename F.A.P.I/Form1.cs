@@ -39,9 +39,9 @@ namespace F.A.P.I
         public static string dmhyUrl = "https://dmhy.anoneko.com/";
 
 
-      
 
-        public static string dmhyBgmListUrl = dmhyUrl+"cms/page/name/programme.html";
+
+        public static string dmhyBgmListUrl = dmhyUrl + "cms/page/name/programme.html";
 
 
 
@@ -80,7 +80,7 @@ namespace F.A.P.I
         public Form1()
         {
 
-           
+
 
 
             if (MyIni.Read("getDmhyCookies") == "1")
@@ -92,7 +92,7 @@ namespace F.A.P.I
                 dmhycookies = "1";
             }
 
-    
+
 
 
             System.Net.ServicePointManager.DefaultConnectionLimit = 100;
@@ -147,7 +147,7 @@ namespace F.A.P.I
 ￣^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^￣
 ";
 
- 
+
                 loadconfig();
                 loadfansub();
                 loadfilterList();
@@ -156,6 +156,21 @@ namespace F.A.P.I
                 readJson(month);
                 initcombobox();
                 //readVote();
+
+
+                if (String.IsNullOrEmpty(MyIni.Read("new_version_flag_1_2_0")))
+                {
+                    MessageBox.Show(@"-------------------------------------------------------------------
+○F.A.P.I 
+　更新公告
+　　　　　　　　　　　　　　　　　                       kenqq
+　　　　　　　　　　　　　　　　　　　　　　　        2021/04/03
+-------------------------------------------------------------------
+
+■1．更新履歴
+2021/04/03 ver 1.2.0 提供对https://nyaa.si 站的支持");
+                    MyIni.Write("new_version_flag_1_2_0", "1");
+                }
 
                 
 
@@ -177,9 +192,10 @@ namespace F.A.P.I
                 System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer() { };
                 timer.Tick += new EventHandler(OnTimedEvent);
                 int autoFapiInternal = 5;
-                try {
+                try
+                {
                     autoFapiInternal = Int32.Parse(MyIni.Read("autoFapiInternal"));
-                    if (autoFapiInternal<1)
+                    if (autoFapiInternal < 1)
                     {
                         autoFapiInternal = 5;
                     }
@@ -193,7 +209,7 @@ namespace F.A.P.I
                 timer.Enabled = true;
 
                 initflag = true;
-                
+
                 if (MyIni.Read("Order") == "1")
                 {
                     checkBox1.Checked = !checkBox1.Checked;
@@ -208,7 +224,7 @@ namespace F.A.P.I
                     MyIni.Write("StartFAPI", "0");
                 }
 
-                
+
             }
             catch (Exception ex)
             {
@@ -227,7 +243,7 @@ namespace F.A.P.I
                 IRestResponse response = client.Execute(request);
                 var content = response.Content;
                 Newtonsoft.Json.Linq.JObject aaaa = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(content);
-                Newtonsoft.Json.Linq.JArray bbbb=(Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(aaaa.GetValue("message").ToString());
+                Newtonsoft.Json.Linq.JArray bbbb = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(aaaa.GetValue("message").ToString());
 
 
 
@@ -260,7 +276,7 @@ namespace F.A.P.I
 
                 writeLocalJson(jsonList, jsonName);
 
-                
+
             }
         }
 
@@ -432,7 +448,7 @@ namespace F.A.P.I
                 this.WindowState = FormWindowState.Minimized;
                 this.ShowInTaskbar = false;
             }
-            else  
+            else
             {
                 MyIni.Write("StartMinimized", "0");
             }
@@ -695,7 +711,7 @@ KPDM
             }
             return (str_url);
         }
-         
+
 
         private bool filter(JsonClass jc, Element td)
         {
@@ -727,7 +743,7 @@ KPDM
             /* NSoup.Select.Elements td_span = td.Select("span"); */
             foreach (Element a in td_a)
             {
-                asd += a.Text();
+                asd += a.Text();    
             }
 
 
@@ -892,7 +908,7 @@ KPDM
 
                 string dmhy = dmhyUrl;
 
-                string url = dmhyUrl+"topics/list?keyword=" + keywordURL + "&team_id=0&order=date-desc";
+                string url = dmhyUrl + "topics/list?keyword=" + keywordURL + "&team_id=0&order=date-desc";
 
                 /* string url = "dmhyUrl/"; */
 
@@ -1137,7 +1153,7 @@ KPDM
                                 DateTime currentSeason = DateTime.ParseExact(asdasdsad, "yyyy/MM/dd HH:mm", culture);                 /* 本季时间 */
                                 if (DateTime.Compare(dateVal, currentSeason) < 0)                                                   /* 片要比本季时间大 */
                                     continue;
-                            }  
+                            }
                         }
 
                         Element countt = tr.Select("td:eq(4)").First().Select("span").Eq(2).First();
@@ -1228,20 +1244,20 @@ KPDM
                 }
                 else
                 {
-                    archiveList=new List<I.archive>();
+                    archiveList = new List<I.archive>();
                     byte[] b = webClient.DownloadData(url);
                     string jsonText = Encoding.UTF8.GetString(b, 0, b.Length);
                     Newtonsoft.Json.Linq.JObject aaaa = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(jsonText);
                     Newtonsoft.Json.Linq.JObject bb = (Newtonsoft.Json.Linq.JObject)aaaa.GetValue("data");
                     foreach (var item in bb)
                     {
-                        archive asd=new archive();
-                        asd.year=item.Key;
-                        asd.months=new List<months>();
+                        archive asd = new archive();
+                        asd.year = item.Key;
+                        asd.months = new List<months>();
                         Newtonsoft.Json.Linq.JObject cc = (Newtonsoft.Json.Linq.JObject)item.Value;
                         foreach (var item1 in cc)
                         {
-                            months m=new months();
+                            months m = new months();
                             m.month = item1.Key;
                             m.json = ((Newtonsoft.Json.Linq.JObject)item1.Value).GetValue("path").ToString();
                             asd.months.Add(m);
@@ -1311,7 +1327,7 @@ KPDM
             }
             int adasd = "https://bgmlist.com/tempapi/bangumi/".Length;
             jsonName = url.Substring(adasd, url.Length - adasd).Replace("/", "-");
-            
+
             /* **   本地json没有创建的话 */
             if (System.IO.File.Exists(Path.Combine(appdataFAPI, @jsonName)))
             {
@@ -1328,7 +1344,7 @@ KPDM
                     byte[] b = webClient.DownloadData(url);
                     string jsonText = Encoding.UTF8.GetString(b, 0, b.Length);
                     Newtonsoft.Json.Linq.JObject aaaa = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(jsonText);
-                    jsonList1=new Newtonsoft.Json.Linq.JArray();
+                    jsonList1 = new Newtonsoft.Json.Linq.JArray();
                     foreach (var item in aaaa)
                     {
                         jsonList1.Add(item.Value);
@@ -1342,14 +1358,14 @@ KPDM
 
 
                         String sad = a["titleCN"].ToString().Replace("-", " ");
-                        if (sad.Trim()=="")
+                        if (sad.Trim() == "")
                         {
                             sad = a["titleJP"].ToString().Replace("-", " ");
                             a["titleCN"] = sad;
 
                         }
 
-                        a.Add("searchKeyword",sad);  /* 搜索用关键字 默认用json提供的 */
+                        a.Add("searchKeyword", sad);  /* 搜索用关键字 默认用json提供的 */
                         a.Add("fansub", " ");                                                 /* 字幕组 */
                         a.Add("longepisode", "0");                                            /* 长期连载 */
                         a.Add("lastDate", "");                                                /* 上一次完成时间 */
@@ -1373,7 +1389,7 @@ KPDM
 
         private void useDmhyKeyword(Newtonsoft.Json.Linq.JArray jsonList)
         {
-            if(jsonList==null || jsonList.Count == 0)
+            if (jsonList == null || jsonList.Count == 0)
             {
                 return;
             }
@@ -1401,14 +1417,14 @@ KPDM
                 startIndex = endIndex + 3;
                 endIndex = content.IndexOf("','", startIndex);
                 string bgmKeyword = content.Substring(startIndex, endIndex - startIndex);
-                bgmList.Add(new string[] { bgmName, bgmKeyword});
+                bgmList.Add(new string[] { bgmName, bgmKeyword });
                 startIndex = content.IndexOf("array.push(['", endIndex);
             }
             if (bgmList.Count > 0)
             {
                 foreach (Newtonsoft.Json.Linq.JObject json in jsonList)
                 {
-                    foreach(string[] bgm in bgmList)
+                    foreach (string[] bgm in bgmList)
                     {
                         if (isSameAnimate(json["titleCN"].ToString(), bgm[0]))
                         {
@@ -1565,7 +1581,7 @@ KPDM
                                 //ts = dateVal - now;
                                 //days = (int)Math.Round(ts.TotalDays); /* 相差天数 ; */
                                 days = getdaybystirng(jc.lastDate);
-                                if (!(days <= 0  ))
+                                if (!(days <= 0))
                                 {
                                     continue;
                                 }
@@ -1616,7 +1632,8 @@ KPDM
                             {
                                 keyword = jc.searchKeyword + " " + jc.episode + " " + jc.fansub + filterEpisode;
                                 keyword = keyword.Replace("\u3000", " ");
-                                keyword = getTorrentFromNyaa(keyword, bb);
+                                //keyword = getTorrentFromNyaa(keyword, bb);
+                                keyword = getTorrentFromNyaaNew(keyword, bb, jc);
                             }
                             else if (comboBox4.SelectedItem.ToString().IndexOf("临时版") > -1)
                             {
@@ -1766,12 +1783,146 @@ KPDM
                 if (checkBox5.CheckState != CheckState.Checked)
                     MessageBox.Show("完成鸟");
             }
-            
+
         }
 
- 
+        private string getTorrentFromNyaaNew(string keywordURL, bool longepisode, JsonClass jc) /* 获取种子 */
+        {
+            bool bb = jc.longepisode == "1" ? true : false;
+            List<string> filterEpisode = new List<string>();
+            if (!bb)
+            {
+                /*
+                 * if (jc.episode.Equals(comboBox2.SelectedItem.ToString()))
+                 * {
+                 */
 
- 
+                int countttttt = 0;
+                try
+                {
+                    countttttt = Int32.Parse(jc.episode);
+                }
+                catch (Exception e)
+                {
+                    countttttt = 0;
+                }
+                int episode_before = countttttt - 1;
+
+                for (int q = episode_before; q > -1; --q)
+                {
+                    filterEpisode.Add((q < 10 ? "0" + q : q + ""));
+                }
+                /* } */
+            }
+            string str_url = "nothing";
+            keywordURL = keywordURL.Replace("\"", "");
+
+            if ((from a in kwList
+                 where a == keywordURL
+                 select a).ToList().Count == 0)
+            {
+                /* kwList.Add(keywordURL); */
+            }
+            else
+            {
+                kwList.Add(keywordURL);
+                return ("fail");
+            }
+            try
+            {
+                IFormatProvider culture = new CultureInfo("en-US", true);
+                /*下载网页源代码 */
+                MyWebClient webClient = new MyWebClient(dmhycookies);
+
+                string dmhy = dmhyUrl;
+
+                string url = "https://nyaa.si/?f=0&c=1_3&q=" + keywordURL;
+
+
+                /* string url = "dmhyUrl/"; */
+
+                string htmlString = Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(url));
+
+                Document doc = NSoup.NSoupClient.Parse(htmlString);
+
+                NSoup.Select.Elements tables = doc.Select("tbody");
+
+                //table table-bordered table-hover table-striped torrent-list
+
+                if (tables.Count == 0)
+                {
+                    return ("nothing");
+                }
+                Element table = tables.First();
+                int trCount = table.Select("tr").Count;       /* 找不到结果也会是1 */
+                Element tr = null;
+                for (var i = 0; i < trCount; ++i)                     /* 第一行是标题 */
+                {
+                    try
+                    {
+
+                        tr = table.Select("tr:eq(" + i + ")").First();
+
+                        bool filterflag = false;
+                        Element td = tr.Select("td:eq(1)").First();
+                         
+                        filterflag = filter(jc, td);
+                        if (filterflag)
+                        {
+                            continue;
+                        }
+
+                        if (!longepisode)                                                                                             // 如果是长期连载的 无视开播时间 
+                        {
+                            Element time_doc = tr.Select("td:eq(4)").First();
+                            DateTime dateVal = DateTime.ParseExact(time_doc.Text(), "yyyy-MM-dd HH:mm", culture);  // 片时间 
+                            string monthtmp = comboBox2.Items[comboBox2.SelectedIndex].ToString().Length < 2 ? "0" + comboBox2.Items[comboBox2.SelectedIndex].ToString() : comboBox2.Items[comboBox2.SelectedIndex].ToString();
+                            string asdasdsad = comboBox3.Items[comboBox3.SelectedIndex].ToString() + "-"
+                                              + monthtmp + "-01 00:00";
+                            DateTime currentSeason = DateTime.ParseExact(asdasdsad, "yyyy-MM-dd HH:mm", culture);                 // 本季时间 
+                            if (DateTime.Compare(dateVal, currentSeason) < 0)                                                   // 片要比本季时间大 
+                                continue;
+                        }
+
+
+
+
+                        /* Element torrent = tr.Select("td:eq(3)").First().Select("a[class=download-arrow arrow-torrent]").First(); / * 种子地址 * / */
+                        Element torrent = tr.Select("td:eq(2)").First().Select("a:eq(0)").First();     /* 磁链地址 */
+                        Element magnet = tr.Select("td:eq(2)").First().Select("a:eq(1)").First();                           /* 内部链接地址 用于获取地址 */
+
+
+                        if (checkBox4.CheckState == CheckState.Checked)
+                        {
+                            str_url = "https://nyaa.si" + torrent.Attr("href");
+                        }
+                        else
+                        {
+                            str_url = magnet.Attr("href");
+                        }
+
+                    }
+                    catch (Exception eeeee)
+                    {
+                        MessageBox.Show(jc.searchKeyword + " " + jc.episode + " tmd出错了,请联系tmd kenqq");
+                        MessageBox.Show(eeeee.ToString());
+                        /* str_url = "asd"; */
+                    }
+                }
+            }
+            catch (System.Net.WebException e)
+            {
+                kwList.Add(keywordURL);
+                return ("fail");
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+                kwList.Add(keywordURL);
+                return ("fail");
+            }
+            return (str_url);
+        }
 
         private void totxt(string torrentList)
         {
@@ -1784,18 +1935,29 @@ KPDM
             {
                 Directory.CreateDirectory(a);      /* 创建文件夹 */
             }
-            string torrentsTxt=Path.Combine(a, DateTime.Now.ToString("yyyyMMddHHmmssffffff") + ".txt");
+            string torrentsTxt = Path.Combine(a, DateTime.Now.ToString("yyyyMMddHHmmssffffff") + ".txt");
             System.IO.File.WriteAllText(torrentsTxt, torrentList);
             if (MyIni.Read("torrentPath") != null && !MyIni.Read("torrentPath").Equals(""))
             {
                 string torrentsTxtDown = "";
-                if( ProxyDetails.FullProxyAddress!=null ){
-                    torrentsTxtDown += " -e \"http_proxy=http://"+ProxyDetails.FullProxyAddress+"\"   ";
+                if (ProxyDetails.FullProxyAddress != null)
+                {
+                    torrentsTxtDown += " -e \"http_proxy=http://" + ProxyDetails.FullProxyAddress + "\"   ";
+                    torrentsTxtDown += " -e \"https_proxy=http://" + ProxyDetails.FullProxyAddress + "\"   ";
                 }
-                  torrentsTxtDown+=  
-                    " -d --header=\"User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:49.0) Gecko/20100101 Firefox/49.0\"  --header=\"Accept-Encoding: gzip, deflate, br\""
-                    +" -c -w 6 -t 0 -T 30 -i " 
-                    + torrentsTxt + @" -P " + MyIni.Read("torrentPath");
+                torrentsTxtDown +=
+                  " -d --header=\"User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:49.0) Gecko/20100101 Firefox/49.0\"  --header=\"Accept-Encoding: gzip, deflate, br\"";
+                torrentsTxtDown += " -c -w 6 -t 0 -T 30 -i ";
+                torrentsTxtDown += torrentsTxt + @" -P " + MyIni.Read("torrentPath");
+
+                //torrentsTxtDown += " --load-cookies cookies.txt"; // firefox   Export Cookies
+
+
+
+                torrentsTxtDown += " --no-check-certificate";
+
+
+
                 Process.Start("wget.exe", torrentsTxtDown);
                 //-c 断点续传 -w 等待时间  -t 重试次数 -T timeout秒数 -i 读取文件 -P 保存路径
             }
@@ -1918,7 +2080,7 @@ KPDM
 
                     for (int i = 1; i < 4 + 1; ++i)
                     {
-                        url = dmhyUrl+"topics/list/sort_id/2/page/" + i;
+                        url = dmhyUrl + "topics/list/sort_id/2/page/" + i;
                         lad.Add(NSoup.NSoupClient.Parse(Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(url))));
                     }
                 }
@@ -1967,7 +2129,7 @@ KPDM
                 }
                 catch (Exception ee)
                 {
-  
+
                 }
 
 
@@ -2206,73 +2368,73 @@ KPDM
         {
             /* get bilibili html for bangumi */
 
-           /*
+            /*
 
-            try
-            {
-                MyWebClient webClient = new MyWebClient(dmhycookies);
-                string urlaaaaaaaaa = "http://www.bilibili.com/list/b--a2-2015-t-0--0-d---3.html";
-                string htmlString = "";
-                string bilibili = "http://www.bilibili.com";
+             try
+             {
+                 MyWebClient webClient = new MyWebClient(dmhycookies);
+                 string urlaaaaaaaaa = "http://www.bilibili.com/list/b--a2-2015-t-0--0-d---3.html";
+                 string htmlString = "";
+                 string bilibili = "http://www.bilibili.com";
 
-                htmlString = Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(urlaaaaaaaaa));
+                 htmlString = Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(urlaaaaaaaaa));
 
-                Document doc = NSoup.NSoupClient.Parse(htmlString);
-                Document doctmp;
+                 Document doc = NSoup.NSoupClient.Parse(htmlString);
+                 Document doctmp;
 
-                NSoup.Select.Elements table = doc.Select("ul[class=v_ul]").First().Select("li");
+                 NSoup.Select.Elements table = doc.Select("ul[class=v_ul]").First().Select("li");
 
 
-                ArrayList al = new ArrayList();
-                ArrayList a2 = new ArrayList();
-                foreach (Element a in table)`
-                {
-                    string href = bilibili + a.Select("div[class=t]").First().Select("a").First().Attr("href");
-                    string title = a.Select("div[class=t]").First().Select("a").First().Attr("title");
+                 ArrayList al = new ArrayList();
+                 ArrayList a2 = new ArrayList();
+                 foreach (Element a in table)`
+                 {
+                     string href = bilibili + a.Select("div[class=t]").First().Select("a").First().Attr("href");
+                     string title = a.Select("div[class=t]").First().Select("a").First().Attr("title");
 
-                    htmlString = Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(href));
-                    doctmp = NSoup.NSoupClient.Parse(htmlString);
-                    string w = doctmp.Html();
-                    int ewqeqwwqewe = w.IndexOf("spid =") + "spid =".Length;
-                    int ewqeqwwqewe1 = w.IndexOf("var is");
-                    if (ewqeqwwqewe1 == -1)
-                    {
-                        a2.Add(href + "," + title);
-                        continue;
-                    }
+                     htmlString = Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(href));
+                     doctmp = NSoup.NSoupClient.Parse(htmlString);
+                     string w = doctmp.Html();
+                     int ewqeqwwqewe = w.IndexOf("spid =") + "spid =".Length;
+                     int ewqeqwwqewe1 = w.IndexOf("var is");
+                     if (ewqeqwwqewe1 == -1)
+                     {
+                         a2.Add(href + "," + title);
+                         continue;
+                     }
 
-                    string sid = w.Substring(ewqeqwwqewe, ewqeqwwqewe1 - ewqeqwwqewe);
-                    sid = System.Text.RegularExpressions.Regex.Replace(sid, @"[^\d]", "");
-                    //vidbox zt
-                    al.Add("http://www.bilibili.com/sppage/bangumi-" + sid + "-1.html," + title);
-                }
-                string sum = "";
-                foreach (string a in al)
-                {
-                    //string bfr = a.Split(',')[0];
-                    //htmlString = Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(bfr));
-                    //doctmp = NSoup.NSoupClient.Parse(htmlString);
-                    //NSoup.Select.Elements ulul = doctmp.Select("ul[class=vidbox zt]").First().Select("li");
-                    //foreach (Element ty in ulul)
-                    //{
-                    //    string href = bilibili + ty.Select("a").First().Attr("href");
-                    //    string title = ty.Select("a").First().Text();
-                    //}
-                    sum += a + "\n";
-                }
-                foreach (string a in a2)
-                {
-                    sum += a + "\n";
-                }
+                     string sid = w.Substring(ewqeqwwqewe, ewqeqwwqewe1 - ewqeqwwqewe);
+                     sid = System.Text.RegularExpressions.Regex.Replace(sid, @"[^\d]", "");
+                     //vidbox zt
+                     al.Add("http://www.bilibili.com/sppage/bangumi-" + sid + "-1.html," + title);
+                 }
+                 string sum = "";
+                 foreach (string a in al)
+                 {
+                     //string bfr = a.Split(',')[0];
+                     //htmlString = Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(bfr));
+                     //doctmp = NSoup.NSoupClient.Parse(htmlString);
+                     //NSoup.Select.Elements ulul = doctmp.Select("ul[class=vidbox zt]").First().Select("li");
+                     //foreach (Element ty in ulul)
+                     //{
+                     //    string href = bilibili + ty.Select("a").First().Attr("href");
+                     //    string title = ty.Select("a").First().Text();
+                     //}
+                     sum += a + "\n";
+                 }
+                 foreach (string a in a2)
+                 {
+                     sum += a + "\n";
+                 }
 
-                sum += "";
-            }
-            catch (Exception dasdasdasd)
-            {
-                string asd222 = "";
-            }
-           
-             */
+                 sum += "";
+             }
+             catch (Exception dasdasdasd)
+             {
+                 string asd222 = "";
+             }
+
+              */
 
 
             /* get pokemon pkm */
@@ -2625,7 +2787,7 @@ KPDM
 
                     int days = getdaybystirng(asdasd);
 
-                    if (days < 0  )
+                    if (days < 0)
                     {
                         dataGridView1.Rows[i].Cells[15].Style.BackColor = Color.Red;
                     }
@@ -2641,12 +2803,12 @@ KPDM
 
                 }
             }
- 
+
         }
 
         private static int getdaybystirng(string asdasd)
         {
-            if (asdasd==null||asdasd.Equals(""))
+            if (asdasd == null || asdasd.Equals(""))
             {
                 return -1;
             }
