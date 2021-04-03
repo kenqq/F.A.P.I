@@ -34,7 +34,18 @@ namespace F.A.P.I
         public List<JsonClass> jsonList;
         public List<archive> archiveList;
         public string bgmlist = "";//http://bgmlist.com/
-        public static string dmhyBgmListUrl = "https://share.dmhy.org/cms/page/name/programme.html";
+
+        //public static string dmhyUrl = "https://share.dmhy.org/";
+        public static string dmhyUrl = "https://dmhy.anoneko.com/";
+
+
+      
+
+        public static string dmhyBgmListUrl = dmhyUrl+"cms/page/name/programme.html";
+
+
+
+
 
         public static string fapiServerUrl = "http://127.0.0.1:8080";
 
@@ -68,9 +79,20 @@ namespace F.A.P.I
 
         public Form1()
         {
-            dmhycookies=getDmhyCookies();
-            //dmhycookies = "1";
 
+           
+
+
+            if (MyIni.Read("getDmhyCookies") == "1")
+            {
+                dmhycookies = getDmhyCookies();
+            }
+            else
+            {
+                dmhycookies = "1";
+            }
+
+    
 
 
             System.Net.ServicePointManager.DefaultConnectionLimit = 100;
@@ -250,7 +272,7 @@ namespace F.A.P.I
             {
                 var options = new InternetExplorerOptions()
                 {
-                    InitialBrowserUrl = "https://share.dmhy.org/",
+                    InitialBrowserUrl = dmhyUrl,
                     IntroduceInstabilityByIgnoringProtectedModeSettings = true,
                     IgnoreZoomLevel = true,
                     EnableNativeEvents = false
@@ -258,7 +280,7 @@ namespace F.A.P.I
                 IWebDriver driver = new InternetExplorerDriver(options);
 
 
-                //driver.Url = "https://share.dmhy.org/";
+                //driver.Url = dmhyUrl;
                 Thread.Sleep(12000);
                 var _cookies = driver.Manage().Cookies.AllCookies;
                 driver.Quit();
@@ -868,11 +890,11 @@ KPDM
                 /*下载网页源代码 */
                 MyWebClient webClient = new MyWebClient(dmhycookies);
 
-                string dmhy = "https://share.dmhy.org";
+                string dmhy = dmhyUrl;
 
-                string url = "https://share.dmhy.org/topics/list?keyword=" + keywordURL + "&team_id=0&order=date-desc";
+                string url = dmhyUrl+"topics/list?keyword=" + keywordURL + "&team_id=0&order=date-desc";
 
-                /* string url = "https://share.dmhy.org/"; */
+                /* string url = "dmhyUrl/"; */
 
                 string htmlString = Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(url));
 
@@ -1692,7 +1714,7 @@ KPDM
             /*
              * if (strCmdText.Count>0)
              * {
-             *  System.Diagnostics.Process.Start("explorer", "https://share.dmhy.org/");
+             *  System.Diagnostics.Process.Start("explorer", "dmhyUrl/");
              * }
              *
              * foreach (string s in strCmdText)
@@ -1823,7 +1845,7 @@ KPDM
             }
 
 
-            string dmhy = "https://share.dmhy.org";
+            string dmhy = dmhyUrl;
 
             ArrayList lada = DmhyFiveDoces();
 
@@ -1896,7 +1918,7 @@ KPDM
 
                     for (int i = 1; i < 4 + 1; ++i)
                     {
-                        url = "https://share.dmhy.org/topics/list/sort_id/2/page/" + i;
+                        url = dmhyUrl+"topics/list/sort_id/2/page/" + i;
                         lad.Add(NSoup.NSoupClient.Parse(Encoding.GetEncoding("utf-8").GetString(webClient.DownloadData(url))));
                     }
                 }
