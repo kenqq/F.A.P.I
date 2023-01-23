@@ -47,8 +47,6 @@
             this.fansub = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.lastDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.clearTime = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.upvote = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.downvote = new System.Windows.Forms.DataGridViewButtonColumn();
             this.panel1 = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -118,9 +116,7 @@
             this.searchKeyword,
             this.fansub,
             this.lastDate,
-            this.clearTime,
-            this.upvote,
-            this.downvote});
+            this.clearTime});
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.Name = "dataGridView1";
@@ -204,7 +200,7 @@
             this.isOrderRabbit.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.isOrderRabbit.DataPropertyName = "isOrderRabbit";
             this.isOrderRabbit.FalseValue = "0";
-            this.isOrderRabbit.HeaderText = "是否订阅chino";
+            this.isOrderRabbit.HeaderText = "是否shimarin?";
             this.isOrderRabbit.MinimumWidth = 90;
             this.isOrderRabbit.Name = "isOrderRabbit";
             this.isOrderRabbit.TrueValue = "1";
@@ -308,25 +304,6 @@
             this.clearTime.Name = "clearTime";
             this.clearTime.Width = 60;
             // 
-            // upvote
-            // 
-            this.upvote.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.upvote.DataPropertyName = "upvote";
-            this.upvote.HeaderText = "upvote";
-            this.upvote.MinimumWidth = 20;
-            this.upvote.Name = "upvote";
-            this.upvote.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.upvote.Width = 20;
-            // 
-            // downvote
-            // 
-            this.downvote.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.downvote.DataPropertyName = "downvote";
-            this.downvote.HeaderText = "downvote";
-            this.downvote.MinimumWidth = 20;
-            this.downvote.Name = "downvote";
-            this.downvote.Width = 20;
-            // 
             // panel1
             // 
             this.panel1.Controls.Add(this.dataGridView1);
@@ -411,7 +388,7 @@
             this.button11.Name = "button11";
             this.button11.Size = new System.Drawing.Size(70, 44);
             this.button11.TabIndex = 29;
-            this.button11.Text = "Submit KEYWORD!";
+            this.button11.Text = " ";
             this.button11.UseVisualStyleBackColor = true;
             this.button11.Click += new System.EventHandler(this.button11_Click);
             // 
@@ -421,7 +398,7 @@
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(85, 44);
             this.button10.TabIndex = 28;
-            this.button10.Text = "Synchronize KEYWORD!";
+            this.button10.Text = "Refresh Title!";
             this.button10.UseVisualStyleBackColor = true;
             this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
@@ -660,11 +637,12 @@
             this.comboBox4.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox4.FormattingEnabled = true;
             this.comboBox4.Items.AddRange(new object[] {
-            "dmhy",
+            "dmhy(anoneko)",
+            "dmhy(带cookies)",
             "acg.rip",
             "nya(新)",
             "dmhy临时版",
-            "ktxp"});
+            "ktxp(R.I.P.)"});
             this.comboBox4.Location = new System.Drawing.Point(3, 3);
             this.comboBox4.Name = "comboBox4";
             this.comboBox4.Size = new System.Drawing.Size(82, 20);
@@ -700,7 +678,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.ImeMode = System.Windows.Forms.ImeMode.Alpha;
             this.Name = "Form1";
-            this.Text = "F.A.P.I.2 ver.1.2.0";
+            this.Text = "F.A.P.I.3 ver.0.0.3 2023新春版";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
             this.Resize += new System.EventHandler(this.Form1_Resize);
@@ -762,6 +740,8 @@
         private System.Windows.Forms.Panel panel6;
         private System.Windows.Forms.Panel panel7;
         private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Button button10;
+        private System.Windows.Forms.Button button11;
         private System.Windows.Forms.DataGridViewTextBoxColumn titleCN;
         private System.Windows.Forms.DataGridViewTextBoxColumn titleJP;
         private System.Windows.Forms.DataGridViewTextBoxColumn officalSite;
@@ -778,10 +758,6 @@
         private System.Windows.Forms.DataGridViewComboBoxColumn fansub;
         private System.Windows.Forms.DataGridViewTextBoxColumn lastDate;
         private System.Windows.Forms.DataGridViewButtonColumn clearTime;
-        private System.Windows.Forms.DataGridViewButtonColumn upvote;
-        private System.Windows.Forms.DataGridViewButtonColumn downvote;
-        private System.Windows.Forms.Button button10;
-        private System.Windows.Forms.Button button11;
     }
 }
 

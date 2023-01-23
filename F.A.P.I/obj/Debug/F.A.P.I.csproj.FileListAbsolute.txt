@@ -76,8 +76,6 @@ C:\Users\kenqq\Source\Repos\F.A.P.I\F.A.P.I\bin\Debug\WebDriver.Support.dll
 C:\Users\kenqq\Source\Repos\F.A.P.I\F.A.P.I\bin\Debug\RestSharp.xml
 C:\Users\kenqq\Source\Repos\F.A.P.I\F.A.P.I\bin\Debug\System.Net.Http.Extensions.xml
 C:\Users\kenqq\Source\Repos\F.A.P.I\F.A.P.I\bin\Debug\System.Net.Http.Primitives.xml
-C:\Users\kenqq\Source\Repos\F.A.P.I\F.A.P.I\bin\Debug\WebDriver.xml
-C:\Users\kenqq\Source\Repos\F.A.P.I\F.A.P.I\bin\Debug\WebDriver.Support.xml
 C:\Users\kenqq\Source\Repos\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.csproj.App.config
 C:\Users\kenqq\Source\Repos\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.csprojAssemblyReference.cache
 C:\Users\kenqq\Source\Repos\F.A.P.I\F.A.P.I\obj\Debug\F.A.P.I.Form1.resources

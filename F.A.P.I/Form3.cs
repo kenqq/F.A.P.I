@@ -99,6 +99,7 @@ namespace F.A.P.I
 
             List<JsonClass> j1 = readJson(Int32.Parse(comboBox3.SelectedItem.ToString()), comboBox2);
             List<JsonClass> j2 = readJson(Int32.Parse(comboBox6.SelectedItem.ToString()), comboBox5);
+            List<JsonClass> j22 = new List<JsonClass>();
 
             foreach (JsonClass jc1 in j1)
             {
@@ -115,9 +116,20 @@ namespace F.A.P.I
                         jc2.lastDate = jc1.lastDate;
                     }
                 }
+                if ("1" == jc1.isOrderRabbit)//&& jc1.isOrderRabbit == "1"
+                {
+                    j22.Add(jc1);
+                }
             }
-            String url = getJsonNameUrl(Int32.Parse(comboBox6.SelectedItem.ToString()), comboBox5);
-            String jsonName = getJsonName(url);
+            foreach (JsonClass j222 in j22)
+            {
+                j2.Add(j222);
+            }
+
+                String url = getJsonNameUrl(Int32.Parse(comboBox6.SelectedItem.ToString()), comboBox5);
+            int adasd = "https://bgmlist.com/api/v1/bangumi/archive/".Length;
+            String jsonName = url.Substring(adasd, url.Length - adasd);
+
 
             writeLocalJson(j2, jsonName);
             MessageBox.Show("Success!");
@@ -128,7 +140,7 @@ namespace F.A.P.I
 
 
         public string jsonName = "";
-        public static string appdataFAPI = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\F.A.P.I.2";
+        public static string appdataFAPI = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\F.A.P.I.3";
         public static string archive = Path.Combine(appdataFAPI, "archive.json");
         public static string fansubtxt = Path.Combine(appdataFAPI, "fansub.txt");
         public static string downloadsofttxt = Path.Combine(appdataFAPI, "downloadsoft.txt");
@@ -162,59 +174,148 @@ namespace F.A.P.I
             jsonText = sb.ToString();
             return jsonList = JsonConvert.DeserializeObject<List<JsonClass>>(jsonText);
         }
-        private void readArchiveJson()//读取json汇总的json
+        private void readArchiveJson() /* 读取json汇总的json */
         {
-            /**
-            if (System.IO.File.Exists(archive))
-            {
-                readLocalArchiveJson();
-            }
-            else
-            {
-                MyWebClient webClient = new MyWebClient();
-                string url = "http://bgmlist.com/json/archive.json";
-                byte[] b = webClient.DownloadData(url);
-                string jsonText = Encoding.UTF8.GetString(b, 0, b.Length);
-                archiveList = JsonConvert.DeserializeObject<List<archive>>(jsonText);
-                System.IO.File.WriteAllText(archive, jsonText);
-            }
-             * */
-            /*
             MyWebClient webClient = new MyWebClient();
-            string url = "http://bgmlist.com/json/archive.json";
-            byte[] b = webClient.DownloadData(url);
-            string jsonText = Encoding.UTF8.GetString(b, 0, b.Length);
-            archiveList = JsonConvert.DeserializeObject<List<archive>>(jsonText);
-            System.IO.File.WriteAllText(archive, jsonText);
-             * */
-
-            MyWebClient webClient = new MyWebClient();
-            string url = "https://bgmlist.com/tempapi/archive.json";
-            archiveList = new List<I.archive>();
-            byte[] b = webClient.DownloadData(url);
-            string jsonText = Encoding.UTF8.GetString(b, 0, b.Length);
-            Newtonsoft.Json.Linq.JObject aaaa = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(jsonText);
-            Newtonsoft.Json.Linq.JObject bb = (Newtonsoft.Json.Linq.JObject)aaaa.GetValue("data");
-            foreach (var item in bb)
+            //string url = "https://bgmlist.com/tempapi/archive.json";
+            string url = "https://bgmlist.com/api/v1/bangumi/season";
+            bool local = System.IO.File.Exists(archive);
+            try
             {
-                archive asd = new archive();
-                asd.year = item.Key;
-                asd.months = new List<months>();
-                Newtonsoft.Json.Linq.JObject cc = (Newtonsoft.Json.Linq.JObject)item.Value;
-                foreach (var item1 in cc)
+                if (local)
                 {
-                    months m = new months();
-                    m.month = item1.Key;
-                    m.json = ((Newtonsoft.Json.Linq.JObject)item1.Value).GetValue("path").ToString();
-                    asd.months.Add(m);
+                    readLocalArchiveJson();
+                    var maxMonth = Int32.Parse(archiveList.OrderByDescending(item => item.year).First().months.OrderByDescending(item => item.month).First().month);
+                    var maxYear = Int32.Parse(archiveList.OrderByDescending(item => item.year).First().year);
+                    if (year > maxYear)
+                    {
+                        local = false;
+                    }
+                    else
+                    {
+                        if (maxMonth + 3 <= month)
+                        {
+                            local = false;
+                        }
+                    }
                 }
-                archiveList.Add(asd);
+
+                if (local)
+                {
+                    readLocalArchiveJson();
+                }
+                else
+                {
+                    archiveList = new List<I.archive>();
+                    byte[] b = webClient.DownloadData(url);
+                    string jsonText = Encoding.UTF8.GetString(b, 0, b.Length);
+                    Newtonsoft.Json.Linq.JObject aaaa = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(jsonText);
+                    Newtonsoft.Json.Linq.JArray bb = (Newtonsoft.Json.Linq.JArray)aaaa.GetValue("items");
+                    foreach (var item in bb)
+                    {
+                        months m = new months();
+                        var q = item.ToString().Substring(4, 2);
+                        if (q.Equals("q1"))
+                        {
+                            m.month = "1";
+                        }
+                        if (q.Equals("q2"))
+                        {
+                            m.month = "4";
+                        }
+                        if (q.Equals("q3"))
+                        {
+                            m.month = "7";
+                        }
+                        if (q.Equals("q4"))
+                        {
+                            m.month = "10";
+                        }
+                        m.json = "https://bgmlist.com/api/v1/bangumi/archive/" + item.ToString();
+
+                        archive asd = null;
+
+                        var qwe = (from a in archiveList
+                                   where item.ToString().Substring(0, 4) == a.year
+                                   select a);
+                        if (qwe.Any())
+                        {
+                            asd = qwe.Single();
+                            asd.months.Add(m);
+                        }
+                        else
+                        {
+                            asd = new archive();
+                            asd.year = item.ToString().Substring(0, 4);
+                            asd.months = new List<months>();
+                            asd.months.Add(m);
+                            archiveList.Add(asd);
+                        }
+
+                    }
+                }
             }
-            jsonText = JsonConvert.SerializeObject(archiveList);
-            //archiveList = JsonConvert.DeserializeObject<List<archive>>(jsonText);
-            System.IO.File.WriteAllText(archive, jsonText);
+            //else
+            //{
+            //    archiveList = new List<I.archive>();
+            //    byte[] b = webClient.DownloadData(url);
+            //    string jsonText = Encoding.UTF8.GetString(b, 0, b.Length);
+            //    Newtonsoft.Json.Linq.JObject aaaa = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(jsonText);
+            //    Newtonsoft.Json.Linq.JObject bb = (Newtonsoft.Json.Linq.JObject)aaaa.GetValue("data");
+            //    foreach (var item in bb)
+            //    {
+            //        archive asd = new archive();
+            //        asd.year = item.Key;
+            //        asd.months = new List<months>();
+            //        Newtonsoft.Json.Linq.JObject cc = (Newtonsoft.Json.Linq.JObject)item.Value;
+            //        foreach (var item1 in cc)
+            //        {
+            //            months m = new months();
+            //            m.month = item1.Key;
+            //            m.json = ((Newtonsoft.Json.Linq.JObject)item1.Value).GetValue("path").ToString();
+            //            asd.months.Add(m);
+            //        }
+            //        archiveList.Add(asd);
+            //    }
+            //    jsonText = JsonConvert.SerializeObject(archiveList);
+            //    //archiveList = JsonConvert.DeserializeObject<List<archive>>(jsonText);
+            //    System.IO.File.WriteAllText(archive, jsonText);
+            //}
+
+            catch (Exception ex)
+            {
+                if (System.IO.File.Exists(archive))
+                {
+                    readLocalArchiveJson();
+                }
+                if (archiveList == null || archiveList.Count < 1)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
         }
 
+        private void readLocalArchiveJson() /* 读取json汇总 本地 */
+        {
+            try
+            {
+                StreamReader sr = new StreamReader(archive, Encoding.GetEncoding("UTF-8"));
+                String line;
+                StringBuilder sb = new StringBuilder();
+                string jsonText;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    sb.Append(line);
+                }
+                sr.Close();
+                jsonText = sb.ToString();
+                archiveList = JsonConvert.DeserializeObject<List<archive>>(jsonText);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("找不到文件:" + archive + "  ,请至少在联网环境中成功运行第一次哦");
+            }
+        }
 
         private string getJsonNameUrl(int month, ComboBox comboBox2)//读取动画详细信息json
         {
@@ -247,7 +348,8 @@ namespace F.A.P.I
         {
             Newtonsoft.Json.Linq.JArray jsonList1;
             String url = getJsonNameUrl(month, comboBox2);
-            String jsonName = getJsonName(url);
+            int adasd = "https://bgmlist.com/api/v1/bangumi/archive/".Length;
+            String jsonName = url.Substring(adasd, url.Length - adasd);
 
             //**   本地json没有创建的话
             if (System.IO.File.Exists(Path.Combine(appdataFAPI, @jsonName)))

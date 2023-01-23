@@ -25,7 +25,9 @@ using Seringa.Engine.Enums;
 using OpenQA.Selenium;
 using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Remote;
+using OpenQA.Selenium.Chrome;
 using RestSharp;
+using Microsoft.Win32;
 
 namespace F.A.P.I
 {
@@ -63,7 +65,7 @@ namespace F.A.P.I
         public List<string> filterList = new List<string>();//运行时去除结果    (单纯程序去除结果中的多余词
         public List<string> filterList2 = new List<string>();//运行时"排除"结果   (sql not 运算
 
-        public static string appdataFAPI = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\F.A.P.I.2";
+        public static string appdataFAPI = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\F.A.P.I.3";
         public static string archive = Path.Combine(appdataFAPI, "archive.json");
         public static string fansubtxt = Path.Combine(appdataFAPI, "fansub.txt");
         public static string filterListtxt = Path.Combine(appdataFAPI, "filterList.txt");
@@ -83,14 +85,7 @@ namespace F.A.P.I
 
 
 
-            if (MyIni.Read("getDmhyCookies") == "1")
-            {
-                dmhycookies = getDmhyCookies();
-            }
-            else
-            {
-                dmhycookies = "1";
-            }
+
 
 
 
@@ -153,26 +148,29 @@ namespace F.A.P.I
                 loadfilterList();
                 loadfilterList2();
                 readArchiveJson();
-                readJson(month);
+                readJson(month,false);
                 initcombobox();
                 //readVote();
 
 
-                if (String.IsNullOrEmpty(MyIni.Read("new_version_flag_1_2_0")))
+                if (String.IsNullOrEmpty(MyIni.Read("new_version_flag_0_0_2")))
                 {
                     MessageBox.Show(@"-------------------------------------------------------------------
 ○F.A.P.I 
 　更新公告
 　　　　　　　　　　　　　　　　　                       kenqq
-　　　　　　　　　　　　　　　　　　　　　　　        2021/04/03
+　　　　　　　　　　　　　　　　　　　　　　　        2021/12/26
 -------------------------------------------------------------------
 
 ■1．更新履歴
+2022/01/02 ver 0.0.2 新增按钮 更新bgmlist 当季最新清单,更新字符画
+2021/12/26 ver 0.0.1 由于数据源格式发生变化，重新适配;dmhy镜像站移除。
+2021/12/21 ver 1.2.3 把dmhy的主站与镜像站分开，主站加入获取cookies机制优化。
 2021/04/03 ver 1.2.0 提供对https://nyaa.si 站的支持");
-                    MyIni.Write("new_version_flag_1_2_0", "1");
+                    MyIni.Write("new_version_flag_0_0_2", "1");
                 }
 
-                
+
 
 
                 /* Add menu items to context menu. */
@@ -232,92 +230,193 @@ namespace F.A.P.I
             }
         }
 
-        private void readVote()
-        {
-            fapiServerUrl = MyIni.Read("fapiServerUrl");
-            if (fapiServerUrl != null && fapiServerUrl != "")
-            {
-                var client = new RestClient(fapiServerUrl);
-                var request = new RestRequest("FAPI/rs/fapiService/list", Method.POST);
-                request.RequestFormat = DataFormat.Json;
-                IRestResponse response = client.Execute(request);
-                var content = response.Content;
-                Newtonsoft.Json.Linq.JObject aaaa = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(content);
-                Newtonsoft.Json.Linq.JArray bbbb = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(aaaa.GetValue("message").ToString());
+        //private void readVote()
+        //{
+        //    fapiServerUrl = MyIni.Read("fapiServerUrl");
+        //    if (fapiServerUrl != null && fapiServerUrl != "")
+        //    {
+        //        var client = new RestClient(fapiServerUrl);
+        //        var request = new RestRequest("FAPI/rs/fapiService/list", Method.POST);
+        //        request.RequestFormat = DataFormat.Json;
+        //        IRestResponse response = client.Execute(request);
+        //        var content = response.Content;
+        //        Newtonsoft.Json.Linq.JObject aaaa = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(content);
+        //        Newtonsoft.Json.Linq.JArray bbbb = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(aaaa.GetValue("message").ToString());
 
 
 
-                foreach (JsonClass json in jsonList)
-                {
-                    json.downvote = "";
-                    json.upvote = "";
-                }
+        //        foreach (JsonClass json in jsonList)
+        //        {
+        //            json.downvote = "";
+        //            json.upvote = "";
+        //        }
 
 
 
-                foreach (Newtonsoft.Json.Linq.JObject aa in bbbb)
-                {
-                    try
-                    {
-                        JsonClass aaa = (from a in jsonList
-                                         where a.titleCN == aa.GetValue("t").ToString()
-                                         select a).ToList()[0];
-                        aaa.downvote = aa.GetValue("d").ToString();
-                        aaa.upvote = aa.GetValue("u").ToString();
-                    }
-                    catch (Exception e)
-                    {
+        //        foreach (Newtonsoft.Json.Linq.JObject aa in bbbb)
+        //        {
+        //            try
+        //            {
+        //                JsonClass aaa = (from a in jsonList
+        //                                 where a.titleCN == aa.GetValue("t").ToString()
+        //                                 select a).ToList()[0];
+        //                aaa.downvote = aa.GetValue("d").ToString();
+        //                aaa.upvote = aa.GetValue("u").ToString();
+        //            }
+        //            catch (Exception e)
+        //            {
 
-                    }
-
-
-                }
+        //            }
 
 
-                writeLocalJson(jsonList, jsonName);
+        //        }
 
 
-            }
-        }
+        //        writeLocalJson(jsonList, jsonName);
+
+
+        //    }
+        //}
 
         private string getDmhyCookies()
         {
             int i = 0;
             var s = "";
+            Proxy proxy = new Proxy();
+            var ProxyAddress = MyIni.Read("ProxyAddress");
+            var ProxyPort = MyIni.Read("ProxyPort");
+            if (ProxyAddress == null || ProxyAddress.Length == 0)
+            {
+                MessageBox.Show("请输入代理ip地址!");
+                throw new Exception("请输入代理ip地址!");
+            }
+            if (ProxyPort == null || ProxyPort.Length == 0)
+            {
+                MessageBox.Show("请输入代理端口!");
+                throw new Exception("请输入代理端口!");
+            }
+            var proxyUrl = "http://" + ProxyAddress + ":" + ProxyPort;
+            proxy.HttpProxy = proxyUrl;
+            proxy.SslProxy = proxyUrl;
+
+            //var options = new ChromeOptions();
+            //options.Proxy = proxy;
+            ////options.AddArgument("ignore-certificate-errors");
+            //options.AddArguments("start-maximized");
+            //options.AddArguments("--disable-blink-features=AutomationControlled");
+            //options.AddArguments("--ignore-certificate-errors");
+            //options.AddArguments("--ignore-ssl-errors");
+
+
+            RegistryKey myKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", true);
+            if (myKey != null)
+            {
+                var aaaaa = myKey.GetValue("ProxyEnable");
+                myKey.SetValue("ProxyEnable", "1", RegistryValueKind.DWord);
+                myKey.Close();
+            }
+            var options = new InternetExplorerOptions()
+            {
+                InitialBrowserUrl = dmhyUrl,
+                Proxy = proxy
+            };
+            IWebDriver driver = null;
             while (true)
             {
-                var options = new InternetExplorerOptions()
+                try
                 {
-                    InitialBrowserUrl = dmhyUrl,
-                    IntroduceInstabilityByIgnoringProtectedModeSettings = true,
-                    IgnoreZoomLevel = true,
-                    EnableNativeEvents = false
-                };
-                IWebDriver driver = new InternetExplorerDriver(options);
-
-
-                //driver.Url = dmhyUrl;
-                Thread.Sleep(12000);
-                var _cookies = driver.Manage().Cookies.AllCookies;
-                driver.Quit();
-                if (_cookies.Count > 3)
-                {
-                    foreach (var a in _cookies)
+                    driver = new InternetExplorerDriver(options);
+                    //new ChromeDriver(options);
+                    //driver.Navigate().GoToUrl(dmhyUrl);
+                    IWebElement text = null;
+                    OpenQA.Selenium.Support.UI.WebDriverWait wait = new OpenQA.Selenium.Support.UI.WebDriverWait(driver, new TimeSpan(0, 5, 0));
+                    text = wait.Until<IWebElement>(drv =>
                     {
-                        s += a + ";";
+                        try
+                        {
+                            return drv.FindElement(By.Id("keyword"));
+                        }
+                        catch (Exception ex)
+                        {
+                            //MessageBox.Show(ex.ToString());
+                            Thread.Sleep(5000);
+                            return null;
+                        }
+                    });
+                    text.SendKeys("魔法少女小圆 01");
+                    driver.FindElement(By.ClassName("formButton")).SendKeys(OpenQA.Selenium.Keys.Space);
+                    Thread.Sleep(5000);
+                    text = wait.Until<IWebElement>(drv =>
+                    {
+                        try
+                        {
+                            return drv.FindElement(By.Id("keyword"));
+                        }
+                        catch (Exception ex)
+                        {
+                            //MessageBox.Show(ex.ToString());
+                            Thread.Sleep(5000);
+                            return null;
+                        }
+                    });
+                    var _AllCookies = driver.Manage().Cookies.AllCookies;
+                    if (_AllCookies.Count >= 2)
+                    {
+                        
+                        foreach (var a in _AllCookies)
+                        {
+                            s += a + ";";
+                        }
+                        //MessageBox.Show(s);
+                        break;
                     }
-                    break;
+                    else
+                    {
+                        foreach (var a in _AllCookies)
+                        {
+                            s += a + ";";
+                        }
+                        //MessageBox.Show(s);
+                        ++i;
+                        if (i == 3)
+                        {
+                            MessageBox.Show("清理一下ie cookies!");
+                            Application.Exit();
+                        }
+                    }
                 }
-                else
+                catch (Exception eeeee)
                 {
-                    ++i;
-                    if (i == 3)
-                    {
-                        MessageBox.Show("清理一下ie cookies!");
-                        Application.Exit();
-                    }
+                    MessageBox.Show(eeeee.ToString());
+                    Application.Exit();
+                }
+                finally
+                {
+                    driver.Quit();
                 }
             }
+            
+            //proxyUrl = "http://:";
+            //var proxy2 = new Proxy();
+            //proxy2.Kind = ProxyKind.Direct;
+
+            //var options2 = new InternetExplorerOptions()
+            //{
+            //    //InitialBrowserUrl = "http://www.baidu.com",
+            //    Proxy = proxy2
+            //};
+            //var driver2 = new InternetExplorerDriver(options2);
+            //Thread.Sleep(5000);
+            //driver2.Quit();
+            myKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", true);
+            if (myKey != null)
+            {
+                var aaaaa = myKey.GetValue("ProxyEnable");
+                myKey.SetValue("ProxyEnable", "0", RegistryValueKind.DWord);
+                myKey.Close();
+            }
+
+
             return s;
         }
 
@@ -743,7 +842,7 @@ KPDM
             /* NSoup.Select.Elements td_span = td.Select("span"); */
             foreach (Element a in td_a)
             {
-                asd += a.Text();    
+                asd += a.Text();
             }
 
 
@@ -1216,7 +1315,8 @@ KPDM
         private void readArchiveJson() /* 读取json汇总的json */
         {
             MyWebClient webClient = new MyWebClient(dmhycookies);
-            string url = "https://bgmlist.com/tempapi/archive.json";
+            //string url = "https://bgmlist.com/tempapi/archive.json";
+            string url = "https://bgmlist.com/api/v1/bangumi/season";
             bool local = System.IO.File.Exists(archive);
             try
             {
@@ -1248,27 +1348,78 @@ KPDM
                     byte[] b = webClient.DownloadData(url);
                     string jsonText = Encoding.UTF8.GetString(b, 0, b.Length);
                     Newtonsoft.Json.Linq.JObject aaaa = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(jsonText);
-                    Newtonsoft.Json.Linq.JObject bb = (Newtonsoft.Json.Linq.JObject)aaaa.GetValue("data");
+                    Newtonsoft.Json.Linq.JArray bb = (Newtonsoft.Json.Linq.JArray)aaaa.GetValue("items");
                     foreach (var item in bb)
                     {
-                        archive asd = new archive();
-                        asd.year = item.Key;
-                        asd.months = new List<months>();
-                        Newtonsoft.Json.Linq.JObject cc = (Newtonsoft.Json.Linq.JObject)item.Value;
-                        foreach (var item1 in cc)
+                        months m = new months();
+                        var q = item.ToString().Substring(4, 2);
+                        if (q.Equals("q1"))
                         {
-                            months m = new months();
-                            m.month = item1.Key;
-                            m.json = ((Newtonsoft.Json.Linq.JObject)item1.Value).GetValue("path").ToString();
-                            asd.months.Add(m);
+                            m.month = "1";
                         }
-                        archiveList.Add(asd);
+                        if (q.Equals("q2"))
+                        {
+                            m.month = "4";
+                        }
+                        if (q.Equals("q3"))
+                        {
+                            m.month = "7";
+                        }
+                        if (q.Equals("q4"))
+                        {
+                            m.month = "10";
+                        }
+                        m.json = "https://bgmlist.com/api/v1/bangumi/archive/" + item.ToString();
+
+                        archive asd = null;
+
+                            var qwe = (from a in archiveList
+                                   where item.ToString().Substring(0, 4) == a.year
+                                   select a);
+                            if (qwe.Any())
+                            {
+                                asd = qwe.Single();
+                                asd.months.Add(m);
+                            }
+                            else
+                            {
+                                asd = new archive();
+                                asd.year = item.ToString().Substring(0, 4);
+                                asd.months = new List<months>();
+                                asd.months.Add(m);
+                                archiveList.Add(asd);
+                            }
+                        
                     }
-                    jsonText = JsonConvert.SerializeObject(archiveList);
-                    //archiveList = JsonConvert.DeserializeObject<List<archive>>(jsonText);
-                    System.IO.File.WriteAllText(archive, jsonText);
                 }
             }
+            //else
+            //{
+            //    archiveList = new List<I.archive>();
+            //    byte[] b = webClient.DownloadData(url);
+            //    string jsonText = Encoding.UTF8.GetString(b, 0, b.Length);
+            //    Newtonsoft.Json.Linq.JObject aaaa = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(jsonText);
+            //    Newtonsoft.Json.Linq.JObject bb = (Newtonsoft.Json.Linq.JObject)aaaa.GetValue("data");
+            //    foreach (var item in bb)
+            //    {
+            //        archive asd = new archive();
+            //        asd.year = item.Key;
+            //        asd.months = new List<months>();
+            //        Newtonsoft.Json.Linq.JObject cc = (Newtonsoft.Json.Linq.JObject)item.Value;
+            //        foreach (var item1 in cc)
+            //        {
+            //            months m = new months();
+            //            m.month = item1.Key;
+            //            m.json = ((Newtonsoft.Json.Linq.JObject)item1.Value).GetValue("path").ToString();
+            //            asd.months.Add(m);
+            //        }
+            //        archiveList.Add(asd);
+            //    }
+            //    jsonText = JsonConvert.SerializeObject(archiveList);
+            //    //archiveList = JsonConvert.DeserializeObject<List<archive>>(jsonText);
+            //    System.IO.File.WriteAllText(archive, jsonText);
+            //}
+
             catch (Exception ex)
             {
                 if (System.IO.File.Exists(archive))
@@ -1306,7 +1457,7 @@ KPDM
         }
 
 
-        private void readJson(int month) /* 读取动画详细信息json */
+        private void readJson(int month, bool bbb) /* 读取动画详细信息json */
         {
             Newtonsoft.Json.Linq.JArray jsonList1;
             string url = "";
@@ -1325,11 +1476,11 @@ KPDM
                     }
                 }
             }
-            int adasd = "https://bgmlist.com/tempapi/bangumi/".Length;
-            jsonName = url.Substring(adasd, url.Length - adasd).Replace("/", "-");
+            int adasd = "https://bgmlist.com/api/v1/bangumi/archive/".Length;
+            jsonName = url.Substring(adasd, url.Length - adasd);
 
             /* **   本地json没有创建的话 */
-            if (System.IO.File.Exists(Path.Combine(appdataFAPI, @jsonName)))
+            if (System.IO.File.Exists(Path.Combine(appdataFAPI, @jsonName))&&!bbb)
             {
                 readLocalJson(Path.Combine(appdataFAPI, @jsonName));
             }
@@ -1344,12 +1495,13 @@ KPDM
                     byte[] b = webClient.DownloadData(url);
                     string jsonText = Encoding.UTF8.GetString(b, 0, b.Length);
                     Newtonsoft.Json.Linq.JObject aaaa = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(jsonText);
-                    jsonList1 = new Newtonsoft.Json.Linq.JArray();
-                    foreach (var item in aaaa)
-                    {
-                        jsonList1.Add(item.Value);
-                        //Console.WriteLine(item.Key + item.Value);
-                    }
+                    jsonList1 = (Newtonsoft.Json.Linq.JArray)aaaa.GetValue("items");
+
+                    //jsonList1 = new Newtonsoft.Json.Linq.JArray();
+                    //foreach (var item in aaaa)
+                    //{
+                    //    jsonList1.Add(item.Value);
+                    //}
                     //jsonList1 = (Newtonsoft.Json.Linq.JArray)JsonConvert.DeserializeObject(jsonText);
                     foreach (Newtonsoft.Json.Linq.JObject a in jsonList1)
                     {
@@ -1357,24 +1509,55 @@ KPDM
                         a.Add("episode", "01");                                               /* 集数 默认01 */
 
 
-                        String sad = a["titleCN"].ToString().Replace("-", " ");
-                        if (sad.Trim() == "")
+                        DateTime dt = Convert.ToDateTime(a["begin"].ToString());
+
+
+
+                        a.Add("weekDayJP", (int)dt.DayOfWeek+"");  /* 搜索用关键字 默认用json提供的 */
+                        a.Add("weekDayCN", (int)dt.DayOfWeek+"");  /* 搜索用关键字 默认用json提供的 */
+
+                        a.Add("titleCN", a["title"]);  /* 搜索用关键字 默认用json提供的 */
+                        try
                         {
-                            sad = a["titleJP"].ToString().Replace("-", " ");
-                            a["titleCN"] = sad;
-
+                            a.Add("titleJP", a["titleTranslate"]["zh-Hans"].First());
+                            a.Add("searchKeyword", a["titleTranslate"]["zh-Hans"].First());
                         }
-
-                        a.Add("searchKeyword", sad);  /* 搜索用关键字 默认用json提供的 */
+                        catch(Exception eee)
+                        {
+                            try
+                            {
+                                a.Add("titleJP", a["titleTranslate"]["zh-Hant"].First());
+                                a.Add("searchKeyword", a["titleTranslate"]["zh-Hant"].First());
+                            }
+                            catch (Exception eeee)
+                            {
+                                try
+                                {
+                                    a.Add("titleJP", a["titleTranslate"]["en"].First());
+                                    a.Add("searchKeyword", a["titleTranslate"]["en"].First());
+                                }
+                                catch (Exception eeeee)
+                                {
+                                    a.Add("titleJP", a["title"]);
+                                    a.Add("searchKeyword", a["title"]); 
+                                }
+                            }
+                        }
                         a.Add("fansub", " ");                                                 /* 字幕组 */
                         a.Add("longepisode", "0");                                            /* 长期连载 */
                         a.Add("lastDate", "");                                                /* 上一次完成时间 */
                     }
-                    useDmhyKeyword(jsonList1);
-                    writeLocalJson(jsonList1, jsonName);
+                    //useDmhyKeyword(jsonList1);
+                    if (bbb)
+                    {
+                        refresh(jsonList1);
+                    }
+                    else
+                    {
+                        writeLocalJson(jsonList1, jsonName);
+                    }
                     readLocalJson(Path.Combine(appdataFAPI, @jsonName));
                     checkBox1.Checked = false;
-
                     ProxyDetails.ProxyType = pt;
                 }
                 catch (Exception ex)
@@ -1385,6 +1568,37 @@ KPDM
             dataGridView1.DataSource = (from a in jsonList
                                         where Convert.ToInt32(a.weekDayCN) == day
                                         select a).ToList(); ;
+        }
+
+        private void refresh(Newtonsoft.Json.Linq.JArray jsonList1)
+        {
+            foreach (JsonClass jc in jsonList)
+            {
+                for (int q = jsonList1.Count-1; q > -1; --q)
+                {
+                    if (jsonList1[q]["titleCN"].ToString().Equals(jc.titleCN))
+                    {
+                        jsonList1.RemoveAt(q);
+                    }
+                }
+            }
+            foreach (Newtonsoft.Json.Linq.JObject a in jsonList1)
+            {
+                JsonClass jc = new JsonClass();
+                jc.titleCN = a["titleCN"].ToString();
+                jc.titleJP = a["titleJP"].ToString();
+                jc.weekDayCN = a["weekDayCN"].ToString();
+                jc.weekDayJP = a["weekDayJP"].ToString();
+                jc.isOrderRabbit = a["isOrderRabbit"].ToString();
+                jc.episode = a["episode"].ToString();
+                jc.searchKeyword = a["searchKeyword"].ToString();
+                jc.longepisode = "0";
+                jc.lastDate = "";
+                jc.fansub = " ";
+                jsonList.Add(jc);
+            }
+            writeLocalJson(jsonList, jsonName);
+
         }
 
         private void useDmhyKeyword(Newtonsoft.Json.Linq.JArray jsonList)
@@ -1622,10 +1836,22 @@ KPDM
                                 keyword = keyword.Replace("\u3000", " ");
                                 keyword = getTorrentFromKtxp(keyword, bb, jc);
                             }
-                            else if (comboBox4.SelectedItem.ToString().IndexOf("dmhy") > -1)
+                            else if (comboBox4.SelectedItem.ToString().IndexOf("dmhy(anoneko)") > -1)
                             {
                                 keyword = jc.searchKeyword + " " + jc.episode + " " + jc.fansub;
                                 keyword = keyword.Replace("\u3000", " ");
+                                dmhyUrl = "https://dmhy.anoneko.com/";
+                                keyword = getTorrentFromDmhy(keyword, bb, jc);
+                            }
+                            else if (comboBox4.SelectedItem.ToString().IndexOf("dmhy(带cookies)") > -1)
+                            {
+                                keyword = jc.searchKeyword + " " + jc.episode + " " + jc.fansub;
+                                keyword = keyword.Replace("\u3000", " ");
+                                dmhyUrl = "https://share.dmhy.org/";
+                                if (dmhycookies.Length==0)
+                                {
+                                    dmhycookies = getDmhyCookies();
+                                }
                                 keyword = getTorrentFromDmhy(keyword, bb, jc);
                             }
                             else if (comboBox4.SelectedItem.ToString().IndexOf("nya") > -1)
@@ -1783,7 +2009,7 @@ KPDM
                 if (checkBox5.CheckState != CheckState.Checked)
                     MessageBox.Show("完成鸟");
             }
-
+            dmhycookies = "";
         }
 
         private string getTorrentFromNyaaNew(string keywordURL, bool longepisode, JsonClass jc) /* 获取种子 */
@@ -1865,7 +2091,7 @@ KPDM
 
                         bool filterflag = false;
                         Element td = tr.Select("td:eq(1)").First();
-                         
+
                         filterflag = filter(jc, td);
                         if (filterflag)
                         {
@@ -2175,7 +2401,7 @@ KPDM
         {
             if (initflag)
             {
-                readJson(Int32.Parse(comboBox2.SelectedItem.ToString()));
+                readJson(Int32.Parse(comboBox2.SelectedItem.ToString()),false);
                 if (checkBox1.CheckState == CheckState.Checked)
                 {
                     dataGridView1.DataSource = (from a in jsonList
@@ -2281,7 +2507,7 @@ KPDM
         private void button5_Click(object sender, EventArgs e) /*删除 */
         {
             /* del */
-            if (MessageBox.Show("Delete this user?", "Confirm Message", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            if (MessageBox.Show("不看该片了嘛?", "Confirm Message", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
                 /* delete */
                 foreach (DataGridViewRow item in this.dataGridView1.SelectedRows)
@@ -2554,70 +2780,70 @@ KPDM
                 writeLocalJson(jsonList, jsonName);
                 dataGridView1.Refresh();
             }
-            if (e.ColumnIndex == dataGridView1.Columns["upvote"].Index && e.RowIndex >= 0)
-            {
-                var macAddr =
-    (
-        from nic in NetworkInterface.GetAllNetworkInterfaces()
-        where nic.OperationalStatus == OperationalStatus.Up
-        select nic.GetPhysicalAddress().ToString()
-    ).FirstOrDefault();
+    //        if (e.ColumnIndex == dataGridView1.Columns["upvote"].Index && e.RowIndex >= 0)
+    //        {
+    //            var macAddr =
+    //(
+    //    from nic in NetworkInterface.GetAllNetworkInterfaces()
+    //    where nic.OperationalStatus == OperationalStatus.Up
+    //    select nic.GetPhysicalAddress().ToString()
+    //).FirstOrDefault();
 
-                string asdasd = dataGridView1.Rows[e.RowIndex].Cells[1].Value.ToString();
-                var client = new RestClient(fapiServerUrl);
-                var request = new RestRequest("FAPI/rs/fapiService/vote", Method.POST);
-                request.RequestFormat = DataFormat.Json;
-                request.AddBody(new VoteDTO
-                {
-                    title = asdasd,
-                    macAddress = macAddr,
-                    voteType = 0
-                });
-                IRestResponse response = client.Execute(request);
-                var content = response.Content;
-                Newtonsoft.Json.Linq.JObject aaaa = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(content);
-                string[] aaaaaaa = aaaa.GetValue("message").ToString().Split(new string[] { "," }, StringSplitOptions.None);
+    //            string asdasd = dataGridView1.Rows[e.RowIndex].Cells[1].Value.ToString();
+    //            var client = new RestClient(fapiServerUrl);
+    //            var request = new RestRequest("FAPI/rs/fapiService/vote", Method.POST);
+    //            request.RequestFormat = DataFormat.Json;
+    //            request.AddBody(new VoteDTO
+    //            {
+    //                title = asdasd,
+    //                macAddress = macAddr,
+    //                voteType = 0
+    //            });
+    //            IRestResponse response = client.Execute(request);
+    //            var content = response.Content;
+    //            Newtonsoft.Json.Linq.JObject aaaa = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(content);
+    //            string[] aaaaaaa = aaaa.GetValue("message").ToString().Split(new string[] { "," }, StringSplitOptions.None);
 
-                JsonClass aaa = (from a in jsonList
-                                 where a.titleCN == asdasd
-                                 select a).ToList()[0];
-                aaa.upvote = aaaaaaa[0];
-                aaa.downvote = aaaaaaa[1];
-                writeLocalJson(jsonList, jsonName);
-                dataGridView1.Refresh();
-            }
-            if (e.ColumnIndex == dataGridView1.Columns["downvote"].Index && e.RowIndex >= 0)
-            {
-                var macAddr =
-    (
-        from nic in NetworkInterface.GetAllNetworkInterfaces()
-        where nic.OperationalStatus == OperationalStatus.Up
-        select nic.GetPhysicalAddress().ToString()
-    ).FirstOrDefault();
+    //            JsonClass aaa = (from a in jsonList
+    //                             where a.titleCN == asdasd
+    //                             select a).ToList()[0];
+    //            aaa.upvote = aaaaaaa[0];
+    //            aaa.downvote = aaaaaaa[1];
+    //            writeLocalJson(jsonList, jsonName);
+    //            dataGridView1.Refresh();
+    //        }
+    //        if (e.ColumnIndex == dataGridView1.Columns["downvote"].Index && e.RowIndex >= 0)
+    //        {
+    //            var macAddr =
+    //(
+    //    from nic in NetworkInterface.GetAllNetworkInterfaces()
+    //    where nic.OperationalStatus == OperationalStatus.Up
+    //    select nic.GetPhysicalAddress().ToString()
+    //).FirstOrDefault();
 
-                string asdasd = dataGridView1.Rows[e.RowIndex].Cells[1].Value.ToString();
-                var client = new RestClient(fapiServerUrl);
-                var request = new RestRequest("FAPI/rs/fapiService/vote", Method.POST);
-                request.RequestFormat = DataFormat.Json;
-                request.AddBody(new VoteDTO
-                {
-                    title = asdasd,
-                    macAddress = macAddr,
-                    voteType = 1
-                });
-                IRestResponse response = client.Execute(request);
-                var content = response.Content;
-                Newtonsoft.Json.Linq.JObject aaaa = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(content);
-                string[] aaaaaaa = aaaa.GetValue("message").ToString().Split(new string[] { "," }, StringSplitOptions.None);
+    //            string asdasd = dataGridView1.Rows[e.RowIndex].Cells[1].Value.ToString();
+    //            var client = new RestClient(fapiServerUrl);
+    //            var request = new RestRequest("FAPI/rs/fapiService/vote", Method.POST);
+    //            request.RequestFormat = DataFormat.Json;
+    //            request.AddBody(new VoteDTO
+    //            {
+    //                title = asdasd,
+    //                macAddress = macAddr,
+    //                voteType = 1
+    //            });
+    //            IRestResponse response = client.Execute(request);
+    //            var content = response.Content;
+    //            Newtonsoft.Json.Linq.JObject aaaa = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(content);
+    //            string[] aaaaaaa = aaaa.GetValue("message").ToString().Split(new string[] { "," }, StringSplitOptions.None);
 
-                JsonClass aaa = (from a in jsonList
-                                 where a.titleCN == asdasd
-                                 select a).ToList()[0];
-                aaa.upvote = aaaaaaa[0];
-                aaa.downvote = aaaaaaa[1];
-                writeLocalJson(jsonList, jsonName);
-                dataGridView1.Refresh();
-            }
+    //            JsonClass aaa = (from a in jsonList
+    //                             where a.titleCN == asdasd
+    //                             select a).ToList()[0];
+    //            aaa.upvote = aaaaaaa[0];
+    //            aaa.downvote = aaaaaaa[1];
+    //            writeLocalJson(jsonList, jsonName);
+    //            dataGridView1.Refresh();
+    //        }
         }
 
 
@@ -2710,33 +2936,12 @@ KPDM
         private void button10_Click(object sender, EventArgs e)
         {
 
-            DialogResult dialogResult = MessageBox.Show("Sure?", "确定获取关键词吗?", MessageBoxButtons.YesNo);
+            DialogResult dialogResult = MessageBox.Show("Sure?", "确定更新bgmlist本季新添加的片吗?", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes)
             {
-                foreach (JsonClass json in jsonList)
-                {
-                    var client = new RestClient(fapiServerUrl);
-                    var request = new RestRequest("FAPI/rs/fapiService/keywordcheck", Method.POST);
-                    request.RequestFormat = DataFormat.Json;
-                    request.AddBody(new KeywordDTO
-                    {
-                        title = json.titleCN
-                    });
-                    IRestResponse response = client.Execute(request);
-                    var content = response.Content;
-                    Newtonsoft.Json.Linq.JObject aaaa = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(content);
-                    try
-                    {
-                        json.searchKeyword = aaaa.GetValue("message").ToString();
-                    }
-                    catch (Exception eeeeeee)
-                    {
-
-                    }
-                }
-                writeLocalJson(jsonList, jsonName);
+                readJson(Int32.Parse(comboBox2.SelectedItem.ToString()), true);
                 dataGridView1.Refresh();
-                MessageBox.Show(@"同步完成");
+                MessageBox.Show(@"更新完成");
             }
             else if (dialogResult == DialogResult.No)
             {
@@ -2746,6 +2951,11 @@ KPDM
 
         private void button11_Click(object sender, EventArgs e)
         {
+            bool b = true;
+            if (b)
+            {
+                return;
+            }
             DialogResult dialogResult = MessageBox.Show("Sure?", "确定提交关键词吗?", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes)
             {
@@ -2777,7 +2987,11 @@ KPDM
             {
                 try
                 {
-                    string asdasd = dataGridView1.Rows[i].Cells[15].Value.ToString();
+                    string asdasd = "";
+                    if (dataGridView1.Rows[i].Cells[15] != null && dataGridView1.Rows[i].Cells[15].Value!=null)
+                    {
+                        asdasd = dataGridView1.Rows[i].Cells[15].Value.ToString();
+                    }
                     if (asdasd.Equals(""))
                     {
                         dataGridView1.Rows[i].Cells[15].Style.BackColor = Color.Red;
