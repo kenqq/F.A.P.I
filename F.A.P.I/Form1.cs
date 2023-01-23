@@ -28,6 +28,7 @@ using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Chrome;
 using RestSharp;
 using Microsoft.Win32;
+using OpenQA.Selenium.Edge;
 
 namespace F.A.P.I
 {
@@ -308,6 +309,7 @@ namespace F.A.P.I
             //options.AddArguments("--ignore-ssl-errors");
 
 
+            /* 设置注册表 修改全局代理
             RegistryKey myKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", true);
             if (myKey != null)
             {
@@ -315,19 +317,26 @@ namespace F.A.P.I
                 myKey.SetValue("ProxyEnable", "1", RegistryValueKind.DWord);
                 myKey.Close();
             }
+            */
+
+            /*
             var options = new InternetExplorerOptions()
             {
                 InitialBrowserUrl = dmhyUrl,
                 Proxy = proxy
-            };
+            };*/
+            var options = new EdgeOptions();
+            //options.AddArgument("headless");
+            options.Proxy = proxy;
             IWebDriver driver = null;
             while (true)
             {
                 try
                 {
-                    driver = new InternetExplorerDriver(options);
+                    //driver = new InternetExplorerDriver(options);
+                    driver = new EdgeDriver(options);
                     //new ChromeDriver(options);
-                    //driver.Navigate().GoToUrl(dmhyUrl);
+                    driver.Navigate().GoToUrl(dmhyUrl);
                     IWebElement text = null;
                     OpenQA.Selenium.Support.UI.WebDriverWait wait = new OpenQA.Selenium.Support.UI.WebDriverWait(driver, new TimeSpan(0, 5, 0));
                     text = wait.Until<IWebElement>(drv =>
@@ -395,7 +404,7 @@ namespace F.A.P.I
                     driver.Quit();
                 }
             }
-            
+
             //proxyUrl = "http://:";
             //var proxy2 = new Proxy();
             //proxy2.Kind = ProxyKind.Direct;
@@ -408,81 +417,84 @@ namespace F.A.P.I
             //var driver2 = new InternetExplorerDriver(options2);
             //Thread.Sleep(5000);
             //driver2.Quit();
-            myKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", true);
-            if (myKey != null)
-            {
-                var aaaaa = myKey.GetValue("ProxyEnable");
-                myKey.SetValue("ProxyEnable", "0", RegistryValueKind.DWord);
-                myKey.Close();
-            }
+
+            /* 设置注册表 修改全局代理
+myKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", true);
+if (myKey != null)
+{
+    var aaaaa = myKey.GetValue("ProxyEnable");
+    myKey.SetValue("ProxyEnable", "0", RegistryValueKind.DWord);
+    myKey.Close();
+}
+            */
 
 
-            return s;
-        }
+return s;
+}
 
-        private void OnTimedEvent(object sender, EventArgs e)
-        {
-            if (checkBox5.CheckState == CheckState.Checked)
-                FAPI();
-        }
+private void OnTimedEvent(object sender, EventArgs e)
+{
+if (checkBox5.CheckState == CheckState.Checked)
+    FAPI();
+}
 
 
-        private void setconfig()
-        {
-            if (initflag)
-            {
-                if (checkBox1.CheckState == CheckState.Checked)
-                {
-                    MyIni.Write("Order", "1");
-                }
-                else
-                {
-                    MyIni.Write("Order", "0");
-                }
-                if (checkBox3.CheckState == CheckState.Checked)
-                {
-                    MyIni.Write("Nolimit", "1");
-                }
-                else
-                {
-                    MyIni.Write("Nolimit", "0");
-                }
-                if (checkBox5.CheckState == CheckState.Checked)
-                {
-                    MyIni.Write("autoF", "1");
-                }
-                else
-                {
-                    MyIni.Write("autoF", "0");
-                }
-                if (checkBox4.CheckState == CheckState.Checked)
-                {
-                    MyIni.Write("linkType", "1");
-                }
-                else
-                {
-                    MyIni.Write("linkType", "0");
-                }
-                MyIni.Write("Ffrom", comboBox4.SelectedIndex + "");
-                //MyIni.Write("autoTime", "300");
-                //MyIni.Write("downloadSoftPath", "");
-                //MyIni.Write("ProxyType", "ProxyType.Socks");
-                //MyIni.Write("ProxyAddress", "127.0.0.1");
-                //MyIni.Write("ProxyPort", "1081");
-                //MyIni.Write("FullProxyAddress", "127.0.0.1:1081");
-            }
-        }
+private void setconfig()
+{
+if (initflag)
+{
+    if (checkBox1.CheckState == CheckState.Checked)
+    {
+        MyIni.Write("Order", "1");
+    }
+    else
+    {
+        MyIni.Write("Order", "0");
+    }
+    if (checkBox3.CheckState == CheckState.Checked)
+    {
+        MyIni.Write("Nolimit", "1");
+    }
+    else
+    {
+        MyIni.Write("Nolimit", "0");
+    }
+    if (checkBox5.CheckState == CheckState.Checked)
+    {
+        MyIni.Write("autoF", "1");
+    }
+    else
+    {
+        MyIni.Write("autoF", "0");
+    }
+    if (checkBox4.CheckState == CheckState.Checked)
+    {
+        MyIni.Write("linkType", "1");
+    }
+    else
+    {
+        MyIni.Write("linkType", "0");
+    }
+    MyIni.Write("Ffrom", comboBox4.SelectedIndex + "");
+    //MyIni.Write("autoTime", "300");
+    //MyIni.Write("downloadSoftPath", "");
+    //MyIni.Write("ProxyType", "ProxyType.Socks");
+    //MyIni.Write("ProxyAddress", "127.0.0.1");
+    //MyIni.Write("ProxyPort", "1081");
+    //MyIni.Write("FullProxyAddress", "127.0.0.1:1081");
+}
+}
 
-        private void loadconfig()
-        {
-            if (System.IO.File.Exists(configInI))
-            {
-                loadconfig_1();
-            }
-            else
-            {
-                /* 第一行空格 */
-                string fansubtmp = "";
+private void loadconfig()
+{
+if (System.IO.File.Exists(configInI))
+{
+    loadconfig_1();
+}
+else
+{
+    /* 第一行空格 */
+            string fansubtmp = "";
                 System.IO.File.WriteAllText(configInI, fansubtmp);
                 MyIni.Write("Order", "0");
                 MyIni.Write("Nolimit", "0");
