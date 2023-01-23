@@ -326,7 +326,7 @@ namespace F.A.P.I
                 Proxy = proxy
             };*/
             var options = new EdgeOptions();
-            //options.AddArgument("headless");
+            options.AddArgument("headless");
             options.Proxy = proxy;
             IWebDriver driver = null;
             while (true)
@@ -1892,11 +1892,12 @@ KPDM
                                     if (checkBox4.CheckState != CheckState.Checked)
                                     {
                                         torrentList += keyword + "\n";
+                                        strCmdText.Add(keyword);
                                     }
                                     else
                                     {
                                         torrentList += keyword + "\n";
-                                        strCmdText.Add(keyword);
+                                        //strCmdText.Add(keyword);
                                     }
                                 }
                                 else
@@ -1966,27 +1967,26 @@ KPDM
             }
 
 
-            /*
-             * if (strCmdText.Count>0)
-             * {
-             *  System.Diagnostics.Process.Start("explorer", "dmhyUrl/");
-             * }
-             *
-             * foreach (string s in strCmdText)
-             * {
-             *  System.Diagnostics.Process.Start("explorer", s);
-             * }
-             */
 
-            if (torrentList != null)
+            if (strCmdText.Count > 0 && MyIni.Read("downloadSoftPath")!=null)
             {
-                Clipboard.SetDataObject(torrentList);
+                foreach (string s in strCmdText)
+                {
+                    System.Diagnostics.Process.Start(MyIni.Read("downloadSoftPath"), s);
+                }
             }
+            else
+            {
+                if (torrentList != null)
+                {
+                    Clipboard.SetDataObject(torrentList);
+                }
+                totxt(torrentList);
+            }
+
             this.dataGridView1.Refresh();
 
-
-            totxt(torrentList);
-
+           
             if (kwList.Count != 0 || errorlist.Count != 0)
             {
                 string sisisi = "";
