@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
-using System.Net;
 using System.Collections;
 using System.Threading;
 using System.Globalization;
@@ -16,18 +14,12 @@ using System.Reflection;
 
 using NSoup.Nodes;
 using Newtonsoft.Json;
-using System.Collections.Specialized;
 using System.Net.NetworkInformation;
-using System.Timers;
 using MyProg;
 using Seringa.Engine.Implementations.Proxy;
 using Seringa.Engine.Enums;
 using OpenQA.Selenium;
-using OpenQA.Selenium.IE;
-using OpenQA.Selenium.Remote;
-using OpenQA.Selenium.Chrome;
 using RestSharp;
-using Microsoft.Win32;
 using OpenQA.Selenium.Edge;
 
 namespace F.A.P.I
@@ -39,7 +31,7 @@ namespace F.A.P.I
         public string bgmlist = "";//http://bgmlist.com/
 
         //public static string dmhyUrl = "https://share.dmhy.org/";
-        public static string dmhyUrl = "https://dmhy.anoneko.com/";
+        public static string dmhyUrl = "https://share.dmhy.org/";//https://dmhy.anoneko.com/
 
 
 
@@ -154,7 +146,7 @@ namespace F.A.P.I
                 //readVote();
 
 
-                if (String.IsNullOrEmpty(MyIni.Read("new_version_flag_0_0_2")))
+                if (String.IsNullOrEmpty(MyIni.Read("new_version_flag_0_0_4")))
                 {
                     MessageBox.Show(@"-------------------------------------------------------------------
 ○F.A.P.I 
@@ -164,11 +156,13 @@ namespace F.A.P.I
 -------------------------------------------------------------------
 
 ■1．更新履歴
+2024/11/14 ver 0.0.5 强制TLS
+2024/04/14 ver 0.0.4 磁链长度超过255截取不要
 2022/01/02 ver 0.0.2 新增按钮 更新bgmlist 当季最新清单,更新字符画
 2021/12/26 ver 0.0.1 由于数据源格式发生变化，重新适配;dmhy镜像站移除。
 2021/12/21 ver 1.2.3 把dmhy的主站与镜像站分开，主站加入获取cookies机制优化。
 2021/04/03 ver 1.2.0 提供对https://nyaa.si 站的支持");
-                    MyIni.Write("new_version_flag_0_0_2", "1");
+                    MyIni.Write("new_version_flag_0_0_4", "1");
                 }
 
 
@@ -515,6 +509,7 @@ else
                 MyIni.Write("StartMinimized", "0");
                 MyIni.Write("torrentPath", "0");
                 MyIni.Write("autoFapiInternal", "5");
+                MyIni.Write("nyaQueryString", "https://nyaa.si/?f=0&c=1_3&q=");
 
                 loadconfig_1();
             }
@@ -1538,20 +1533,20 @@ KPDM
                         {
                             try
                             {
-                                a.Add("titleJP", a["titleTranslate"]["zh-Hant"].First());
-                                a.Add("searchKeyword", a["titleTranslate"]["zh-Hant"].First());
+                                //a.Add("titleJP", a["titleTranslate"]["zh-Hant"].First());
+                                //a.Add("searchKeyword", a["titleTranslate"]["zh-Hant"].First());
                             }
                             catch (Exception eeee)
                             {
                                 try
                                 {
-                                    a.Add("titleJP", a["titleTranslate"]["en"].First());
-                                    a.Add("searchKeyword", a["titleTranslate"]["en"].First());
+                                    //a.Add("titleJP", a["titleTranslate"]["en"].First());
+                                    //a.Add("searchKeyword", a["titleTranslate"]["en"].First());
                                 }
                                 catch (Exception eeeee)
                                 {
-                                    a.Add("titleJP", a["title"]);
-                                    a.Add("searchKeyword", a["title"]); 
+                                    //a.Add("titleJP", a["title"]);
+                                    //a.Add("searchKeyword", a["title"]); 
                                 }
                             }
                         }
@@ -1852,7 +1847,7 @@ KPDM
                             {
                                 keyword = jc.searchKeyword + " " + jc.episode + " " + jc.fansub;
                                 keyword = keyword.Replace("\u3000", " ");
-                                dmhyUrl = "https://dmhy.anoneko.com/";
+                                dmhyUrl = "https://share.dmhy.org/";
                                 keyword = getTorrentFromDmhy(keyword, bb, jc);
                             }
                             else if (comboBox4.SelectedItem.ToString().IndexOf("dmhy(带cookies)") > -1)
@@ -1887,7 +1882,7 @@ KPDM
 
                             if (keyword != null && keyword != "nothing" && keyword != "fail" && keyword != "time")
                             {
-                                if (comboBox4.SelectedItem.ToString().IndexOf("dmhy") > -1)
+                                if (comboBox4.SelectedItem.ToString().IndexOf("dmhy") > -1 || comboBox4.SelectedItem.ToString().IndexOf("nya") > -1)
                                 {
                                     if (checkBox4.CheckState != CheckState.Checked)
                                     {
@@ -1905,7 +1900,26 @@ KPDM
                                     torrentList += keyword + "\n";
                                 }
                                 int iii = Int32.Parse(jc.episode) + 1;
-                                jc.episode = iii < 10 ? "0" + iii : iii + "";
+                                int jc_episode_length = jc.episode.Length;
+                                if (jc_episode_length==2)
+                                {
+                                    jc.episode = iii < 10 ? "0" + iii : iii + "";
+                                }
+                                else
+                                {
+                                    if (iii < 10)
+                                    {
+                                        jc.episode = "00" + iii;
+                                    }else if (iii >= 10 && iii < 100)
+                                    {
+                                        jc.episode = "0" + iii;
+                                    }
+                                    else
+                                    {
+                                        jc.episode = iii + "";
+                                    }
+                                    
+                                }
                                 oklist.Add(jc);
                             }
                             else if (keyword.IndexOf("nothing") != -1)
@@ -1972,7 +1986,15 @@ KPDM
             {
                 foreach (string s in strCmdText)
                 {
-                    System.Diagnostics.Process.Start(MyIni.Read("downloadSoftPath"), s);
+                    if (s.Length>255)
+                    {
+                        System.Diagnostics.Process.Start(MyIni.Read("downloadSoftPath"), s.Substring(0,255));
+                    }
+                    else
+                    {
+                        System.Diagnostics.Process.Start(MyIni.Read("downloadSoftPath"), s);
+                    }
+                    
                 }
             }
             else
@@ -2074,7 +2096,7 @@ KPDM
 
                 string dmhy = dmhyUrl;
 
-                string url = "https://nyaa.si/?f=0&c=1_3&q=" + keywordURL;
+                string url = MyIni.Read("nyaQueryString") + keywordURL;
 
 
                 /* string url = "dmhyUrl/"; */

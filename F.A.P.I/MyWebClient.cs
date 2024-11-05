@@ -169,6 +169,7 @@ namespace F.A.P.I
         //}
         public virtual byte[] DownloadData(string address)
         {
+            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             int tryCount = 0;
             byte[] result = null;
             while (true)
